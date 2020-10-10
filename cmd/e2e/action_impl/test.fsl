@@ -1,0 +1,50 @@
+action my_action
+	addr = "http://127.0.0.1:18080";
+	method = http;
+	args = (str pipeline,str pipelineResource);
+	return = (YES | NO );
+action_end
+/
+
+flow_run my_flow_run_5
+	step a1 => ( YES->done ){
+		action=my_action;
+		args=(pipeline="a",pipelineResource="1");
+	};
+flow_run_end
+/
+
+flow_run my_flow_run_6
+	step a1 => ( YES->done ){
+		action=my_action;
+		args=(pipeline="a",pipelineResource="1");
+	};
+flow_run_end
+/
+
+
+flow_run my_flow_run_28
+	step a1 => ( YES->a2 | NO->a3 ){
+		action=my_action;
+		args=(pipeline="a1",pipelineResource="1");
+	};
+	step a2 => ( YES->a4 | NO->a5 ){
+		action=my_action;
+		args=(pipeline="a2",pipelineResource="1");
+	};
+	step a3 => ( YES->done ){
+	action=my_action;
+	args=(pipeline="a3",pipelineResource="1");
+};
+
+    step a4 => ( YES->done ){
+        action=my_action;
+        args=(pipeline="a4",pipelineResource="1");
+    };
+    step a5 => ( YES->done ){
+        action=my_action;
+        args=(pipeline="a5",pipelineResource="1");
+    };
+flow_run_end
+/
+

@@ -1,0 +1,26 @@
+url: http://127.0.0.1:8080/action
+data:
+{
+   "metadata":{
+      "name":"my_test_action",
+      "kind":"action"
+    },
+   "spec":{
+      "system":"yce",
+      "serveType": 0 ,
+      "endpoints":[
+         "http://127.0.0.1:18080"
+      ],
+      "params":{
+         "pipeline": 0 ,
+         "pipelineResource":0
+      },
+      "return_states": ["Yes"]
+   }
+}
+
+
+// watch action & event
+http://127.0.0.1:8080/watch?resource=action?version=1599120681&resource=event?version=1599450387
+
+

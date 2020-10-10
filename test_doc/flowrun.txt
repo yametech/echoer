@@ -1,0 +1,36 @@
+post url: http://127.0.0.1:8080/flowrun
+data:
+{
+   "metadata":{
+      "name":"my_test_flowrun",
+      "kind":"flowrun"
+   },
+   "spec":{
+      "current_state":"ready",
+      "steps":[
+         {
+            "metadata":{
+               "name":"step_1",
+               "kind":"step"
+            },
+            "spec":{
+               "flow_id":"my_test_flowrun",
+               "action_run":{
+                  "action_name":"my_test_action",
+                  "return_state_map":{
+                     "Yes":"done"
+                  },
+                  "action_params":{
+                    "pipeline": "my_pipeline" ,
+                    "pipelineResource":"my_pipeline_resource"
+                  },
+                  "done":false
+               },
+               "response":{
+                  "state":""
+               }
+            }
+         }
+      ]
+   }
+}

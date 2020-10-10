@@ -1,0 +1,86 @@
+syntax = "proto3";
+
+package proto;
+
+// Standard event type, data flow
+enum EventType {
+  Added = 0;
+  Modified = 1;
+  Deleted = 2;
+  Error = 3;
+}
+
+// Basic keyValue Pair
+message Pair {
+  string key = 1;
+  repeated string values = 2;
+}
+
+// Request for action system
+message Ping {
+  uint32 uid = 1;
+  int64 unixTime = 2;
+}
+
+// Response for ping
+message Pong {
+  uint32 uid = 1;
+  int64 unixTime = 2;
+}
+
+// Response Status Code
+enum StatusCode {
+  ok = 0;
+  error = 1;
+}
+
+// A request as RPC
+message Request {
+  map<string, Pair> header = 1;
+  map<string, Pair> body = 2;
+  // unix timestamp
+  int64 timestamp = 3;
+}
+
+// A response as RPC
+// Expected response for the api handler
+message Response {
+  StatusCode statusCode = 1;
+  map<string, Pair> header = 2;
+  map<string, Pair> body = 3;
+  // unix timestamp
+  int64 timestamp = 4;
+}
+
+// A event as RPC
+// Forwarded by the event handler
+message Event {
+  // e.g login
+  string name = 1;
+  // uuid
+  string id = 2;
+  // unix timestamp of event
+  int64 timestamp = 3;
+  // event headers
+  map<string, Pair> header = 4;
+  // the event data
+  string data = 5;
+}
+
+// The Echo service definition.
+service Echo {
+  // Sends a Ping return a Pong
+  rpc Probe (Ping) returns (Pong) {}
+  // Auth for client
+  rpc Auth (Request) returns (Response) {}
+  //  Sends Event to echo server
+  rpc Record(Event)  returns (Response) {}
+  // Log real time log stream
+  rpc Log(Request) returns (stream Response) {}
+  // Watch
+  rpc Watch(Request) returns (stream Response) {}
+  // List
+  rpc List(Request) returns (Response) {}
+  // Get
+  rpc Get(Request) returns (Response) {}
+}
