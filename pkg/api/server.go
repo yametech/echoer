@@ -125,3 +125,7 @@ func (s *Server) RpcServer(addr string) error {
 	api.RegisterEchoServer(srv, s)
 	return srv.Serve(listen)
 }
+
+type createRawData struct {
+	Data string `json:"data"`
+}

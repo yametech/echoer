@@ -1,15 +1,15 @@
 package api
 
 import (
+	"encoding/json"
 	"fmt"
-	"github.com/yametech/echoer/pkg/core"
+	"github.com/yametech/echoer/pkg/factory"
+	"github.com/yametech/echoer/pkg/fsm/fss"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/yametech/echoer/pkg/common"
 	"github.com/yametech/echoer/pkg/resource"
-	"github.com/yametech/echoer/pkg/service"
-	pb "github.com/yametech/echoer/proto"
 )
 
 func (h *Handle) flowRunCreate(g *gin.Context) {
@@ -17,25 +17,22 @@ func (h *Handle) flowRunCreate(g *gin.Context) {
 	if err != nil {
 		RequestParamsError(g, "post data is wrong", err)
 	}
-	r := &resource.FlowRun{}
-	if err := core.JSONRawToResource(postRaw, r); err != nil {
+	r := &createRawData{}
+	if err := json.Unmarshal(postRaw, r); err != nil {
 		RequestParamsError(g, "post data is wrong, can't not unmarshal", err)
 		return
 	}
-	newObj, isUpdate, err := h.Apply(common.DefaultNamespace, common.FlowRunCollection, r.GetName(), r)
+	fsl := r.Data
+	stmt, err := fss.NewFlowRunFSLParser().Parse(fsl)
 	if err != nil {
-		InternalError(g, "store error", err)
+		InternalError(g, "fsl parse error", err)
 		return
 	}
-	var envType = pb.EventType_Added
-	if isUpdate {
-		envType = pb.EventType_Modified
-	}
-	if err := service.NewService(h.IStorage).RecordEvent(envType, newObj, "create flow run item object"); err != nil {
-		InternalError(g, "record event error", err)
+	if err := factory.NewTranslation(factory.NewStoreImpl(h.IStorage)).ToFlowRun(stmt); err != nil {
+		InternalError(g, "fsl parse error", err)
 		return
 	}
-	g.JSON(http.StatusOK, newObj)
+	g.JSON(http.StatusOK, "")
 }
 
 func (h *Handle) flowRunList(g *gin.Context) {
