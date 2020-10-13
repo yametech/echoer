@@ -18,14 +18,14 @@ func NewTranslation(store IStore) *Translation {
 }
 
 func (t *Translation) ToFlowRun(stmt *fss.FlowRunStmt) error {
-	_, err := t.GetFlowRun(stmt.Name)
+	_, err := t.GetFlowRun(stmt.Flow)
 	if err != nil {
 		if err == storage.NotFound {
 			goto CREATE
 		}
 		return err
 	}
-	return fmt.Errorf("flow run (%s) already exist", stmt.Name)
+	return fmt.Errorf("flow run (%s) already exist", stmt.Flow)
 CREATE:
 	var fr = &resource.FlowRun{
 		Metadata: core.Metadata{
