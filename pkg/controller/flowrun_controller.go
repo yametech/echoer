@@ -209,7 +209,7 @@ func (f *FlowRunController) stepGraph(step resource.Step, first, last bool) erro
 		listenEvent := StepStateEvent(f.Name, step.GetName(), entryState)
 		expectStep := expectState
 		callback := func(event *fsm.Event) {
-			if expectState == fsm.DONE {
+			if expectStep == fsm.DONE {
 				return
 			}
 			// create target step based on call

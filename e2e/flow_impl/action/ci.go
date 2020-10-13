@@ -23,7 +23,7 @@ func CI(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, "")
 		return
 	}
-	fmt.Printf("ci action recv (%v)\n", request)
+	fmt.Printf("recv (%v)\n", request)
 	ctx.JSON(http.StatusOK, "")
 
 	RespToApiServer("ci", request.FlowId, request.StepName, request.AckState, request.UUID, true)
