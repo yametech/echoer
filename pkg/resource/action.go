@@ -50,7 +50,7 @@ func CheckActionParams(runParams map[string]interface{}, actParams ActionParams)
 			if v != STR {
 				return err
 			}
-		case int64:
+		case int64, int32, int16, int8, int, float32, float64, uint64, uint32, uint16, uint8, uint:
 			if v != INT {
 				return err
 			}

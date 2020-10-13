@@ -52,6 +52,7 @@ func resp(url string) {
 
 func main() {
 	go resp("http://127.0.0.1:8080/step")
+
 	route := gin.New()
 	route.POST("/", func(ctx *gin.Context) {
 		ci := &request{}
