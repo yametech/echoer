@@ -64,7 +64,7 @@ action notify
 action_end
 /
 
-flow_run my_flow_run_1
+flow_run my_flow_run
 	step A => (SUCCESS->D | FAIL->A) {
 		action = "ci";
 		args = (project="https://github.com/yametech/compass.git",version="v0.1.0",retry_count=10);
@@ -90,7 +90,7 @@ flow_run_end
 
 2. your code
 
-You need to serve the business to http and receive the request request contains the following fields,example ref: e2e/flow_impl/action/ci.go/request struct
+You need to serve the business to http and receive the request contains the following fields,example ref: e2e/flow_impl/action/ci.go/request struct
 ```
 FlowId           string `json:"flowId"`
 StepName         string `json:"stepName"`
