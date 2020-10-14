@@ -9,7 +9,7 @@ func main() {
 	route := gin.New()
 
 	route.POST("/ci", action.CI)
-	route.POST("/deploy1", action.Deploy1)
+	route.POST("/deploy", action.Deploy1)
 	route.POST("/approval", action.Approval)
 	route.POST("/approval2", action.Approval2)
 	route.POST("/notify", action.Notify)
