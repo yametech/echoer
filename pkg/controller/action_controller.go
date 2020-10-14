@@ -2,14 +2,14 @@ package controller
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/laik/timerqueue"
 	"github.com/yametech/echoer/pkg/action"
 	"github.com/yametech/echoer/pkg/common"
 	"github.com/yametech/echoer/pkg/core"
 	"github.com/yametech/echoer/pkg/resource"
 	"github.com/yametech/echoer/pkg/storage"
-	"strings"
-	"time"
 )
 
 var _ Controller = &ActionController{}
@@ -125,7 +125,7 @@ func (a *ActionController) realAction(obj *resource.Step) error {
 		return nil
 	}
 
-	fmt.Printf("[INFO] real action reconcile step(%s) flow(%s)\n", obj.GetName(), obj.Spec.FlowID)
+	fmt.Printf("[INFO] real action reconcile step(%s) flow(%s) action (%s) \n", obj.GetName(), obj.Spec.FlowID, obj.Spec.ActionName)
 
 	_action := &resource.Action{}
 	if err := a.Get(common.DefaultNamespace, common.ActionCollection, obj.Spec.ActionName, _action); err != nil {
@@ -138,7 +138,7 @@ func (a *ActionController) realAction(obj *resource.Step) error {
 
 	obj.Spec.ActionParams[common.FlowId] = obj.Spec.FlowID
 	obj.Spec.ActionParams[common.StepName] = obj.GetName()
-	obj.Spec.ActionParams[common.AckState] = strings.Join(_action.Spec.ReturnStates, ",")
+	obj.Spec.ActionParams[common.AckStates] = _action.Spec.ReturnStates
 	obj.Spec.ActionParams[common.UUID] = obj.UUID
 
 	switch _action.Spec.ServeType {
@@ -147,14 +147,15 @@ func (a *ActionController) realAction(obj *resource.Step) error {
 			Params(obj.Spec.ActionParams).
 			Post(_action.Spec.Endpoints)
 		if err := hc.Do(); err != nil {
+			fmt.Printf("[INFO] flow (%s) step (%s) execute action (%s) error: %s\n",
+				obj.Spec.FlowID, obj.GetName(), obj.Spec.ActionName, err)
 			a.tq.Schedule(
 				&DelayStepAction{obj, a.IStorage},
 				time.Now().Add(time.Duration(least(obj.Spec.RetryCount))*time.Second),
 			)
-			return err
 		}
 	case resource.GRPC:
-		// TODO
+		// TODO current unsupported grpc
 	}
 
 	return nil

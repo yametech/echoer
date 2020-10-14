@@ -48,7 +48,9 @@ func (m *Metadata) GetKind() Kind {
 
 func (m *Metadata) GenerateVersion() IObject {
 	m.Version = time.Now().Unix()
-	m.UUID = utils.NewSUID().String()
+	if m.UUID == "" {
+		m.UUID = utils.NewSUID().String()
+	}
 	return m
 }
 

@@ -86,6 +86,8 @@ flow_run my_flow_run
         args=(project="nz00001",version=12343);
     };
 flow_run_end
+/
+
 ```
 
 2. your code
@@ -105,12 +107,12 @@ The "ci" action has args (str project,str version,int retry_count) , so the busi
 type ciRequest struct {
 	FlowId   string `json:"flowId"`
 	StepName string `json:"stepName"`
-	AckState string `json:"ackState"`
+	AckStates []string `json:"ackStates"`
 	UUID     string `json:"uuid"`
 	//ci action args
 	Project    string `json:"project"`
-	Version    int    `json:"version"`
-	RetryCount string `json:"retry_count"`
+	Version    int64   `json:"version"`
+	RetryCount int64 `json:"retry_count"`
 }
 ```
  
@@ -128,3 +130,88 @@ type Response struct {
 
 
 3. terminal access to api-server
+```
+☁  cli [main] ⚡  ./cli
+
+echoer
+        /\_/\                                                 ##         .
+      =( °w° )=                                         ## ## ##        ==
+        )   (     // 📒 🤔🤔🤔  ♻︎                       ## ## ## ## ##    ===
+       (__ __)           === == ==                /""""""""""""""""\___/ ===
+ /"""""""""""""" //\___/ === == ==                           ~~/~~~~ ~~~ ~~~~ ~~ ~ /  ===- ~~~
+{                       /  == =-                  \______ o          _,/
+ \______ O           _ _/                          \      \       _,'
+  \    \         _ _/                               '--.._\..--''
+    \____\_______/__/__/
+
+>
+> action ci
+	addr = "http://localhost:18080/ci";
+	method = http;
+	args = (str project,str version,int retry_count);
+	return = (SUCCESS | FAIL);
+action_end
+/
+
+action approval
+	addr = "http://localhost:18080/approval";
+	method = http;
+	args = (str work_order,int version);
+	return = (AGREE | REJECT | NEXT | FAIL);
+action_end
+/
+
+action deploy_1
+	addr = "http://localhost:18080/deploy";
+	method = http;
+	args = (str project, int version);
+	return = (SUCCESS | FAIL);
+action_end
+/
+
+action approval_2
+	addr = "http://localhost:18080/approval2";
+	method = http;
+	args = (str project, int version);
+	return = (AGREE | REJECT | FAIL);
+action_end
+/
+
+action notify
+	addr = "http://localhost:18080/notify";
+	method = http;
+	args = (str project, int version);
+	return = (SUCCESS | FOK
+> > OK
+> > OK
+> > OK
+> > AIL);
+action_end
+/
+
+flow_run my_flow_run
+	step A => (SUCCESS->D | FAIL->A) {
+		action = "ci";
+		args = (project="https://github.com/yametech/compass.git",version="v0.1.0",retry_count=10);
+	};
+	step D => ( AGREE -> B | REJECT -> C | NEXT -> E | FAIL -> D ) {
+		action="approval";
+		args=(work_order="nz00001",version=12343);
+	};
+	step B => (FAIL->B | SUCCESS->C) {
+		action="deploy_1";
+		args=(project="nz00001",version=12343);
+	};
+	step E => (REJECT->C | AGREE->B | FAIL->E) {
+		action="approval_2";
+		args=(project="nz00001",version=12343);
+	};
+    step C => (SUCCESS->done | FAIL->C){
+        action="notify";
+        args=(project="nz00001",version=12343);
+    };
+flow_run_end
+/OK
+> >
+OK
+```

@@ -13,7 +13,7 @@ func TestFlowRunController(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	step := createStepObject("fake_test", "fake_step_1", "fake_action_1", nil)
+	step := createStepObject("fake_test", "", "fake_step_1", "fake_action_1", nil)
 	fr.addSteps([]resource.Step{step})
 
 	if err := fr.stepGraph(step, true, true); err != nil {
@@ -95,8 +95,8 @@ func TestFlowRunController2(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	step1 := createStepObject("fake_test", "fake_step_1", "fake_action_1", map[string]string{"Yes": "fake_step_2"})
-	step2 := createStepObject("fake_test", "fake_step_2", "fake_action_2", nil)
+	step1 := createStepObject("fake_test", "", "fake_step_1", "fake_action_1", map[string]string{"Yes": "fake_step_2"})
+	step2 := createStepObject("fake_test", "", "fake_step_2", "fake_action_2", nil)
 	steps := []resource.Step{step1, step2}
 	fr.addSteps(steps)
 
@@ -206,8 +206,8 @@ func TestFlowRunController2Next(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	step1 := createStepObject("fake_test", "fake_step_1", "fake_action_1", map[string]string{"Yes": "fake_step_2"})
-	step2 := createStepObject("fake_test", "fake_step_2", "fake_action_2", nil)
+	step1 := createStepObject("fake_test", "", "fake_step_1", "fake_action_1", map[string]string{"Yes": "fake_step_2"})
+	step2 := createStepObject("fake_test", "", "fake_step_2", "fake_action_2", nil)
 	steps := []resource.Step{step1, step2}
 	fr.addSteps(steps)
 

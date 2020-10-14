@@ -7,7 +7,7 @@ action_end
 /
 
 flow_run my_flow_run_5
-	step a1 => ( YES->done ){
+	step a3 => (YES->done){
 		action=my_action;
 		args=(pipeline="a",pipelineResource="1");
 	};

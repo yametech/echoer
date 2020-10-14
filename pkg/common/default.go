@@ -12,10 +12,10 @@ const (
 type ActionParamIdType = string
 
 const (
-	FlowId   ActionParamIdType = "flowId"
-	StepName ActionParamIdType = "stepName"
-	AckState ActionParamIdType = "ackState"
-	UUID     ActionParamIdType = "uuid"
+	FlowId    ActionParamIdType = "flowId"
+	StepName  ActionParamIdType = "stepName"
+	AckStates ActionParamIdType = "ackStates"
+	UUID      ActionParamIdType = "uuid"
 )
 
 type Common struct {
