@@ -21,7 +21,7 @@ type Server struct {
 	*Handle
 	storage.IStorage
 	middlewares []gin.HandlerFunc
-	parser      *command.Parser
+	parser      command.CommandParser
 }
 
 func NewServer(storage storage.IStorage) *Server {

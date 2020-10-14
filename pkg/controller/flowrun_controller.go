@@ -9,7 +9,7 @@ import (
 	"github.com/yametech/echoer/pkg/resource"
 )
 
-func createStepObject(flowID, stepName, actionName string, returnStateMap map[string]string) resource.Step {
+func createStepObject(flowID, flowRunUUID, stepName, actionName string, returnStateMap map[string]string) resource.Step {
 	// create new step action runtime data
 	step := resource.Step{
 		Metadata: core.Metadata{
@@ -17,7 +17,8 @@ func createStepObject(flowID, stepName, actionName string, returnStateMap map[st
 			Kind: resource.StepKind,
 		},
 		Spec: resource.StepSpec{
-			FlowID: flowID,
+			FlowID:      flowID,
+			FlowRunUUID: flowRunUUID,
 			ActionRun: resource.ActionRun{
 				ActionName:     actionName,
 				Done:           false,

@@ -8,23 +8,25 @@ import (
 )
 
 type approval2Request struct {
-	FlowId   string `json:"flowId"`
-	StepName string `json:"stepName"`
-	AckState string `json:"ackState"`
-	UUID     string `json:"uuid"`
+	FlowId    string   `json:"flowId"`
+	StepName  string   `json:"stepName"`
+	AckStates []string `json:"ackStates"`
+	UUID      string   `json:"uuid"`
 	//approval2 action args
 	Project string `json:"project"`
-	Version int    `json:"version"`
+	Version int64  `json:"version"`
 }
 
 func Approval2(ctx *gin.Context) {
+	var name = "approval2"
 	request := &approval2Request{}
 	if err := ctx.BindJSON(request); err != nil {
 		ctx.JSON(http.StatusBadRequest, "")
+		fmt.Printf("action (%s) request bind error (%s)\n", name, err)
 		return
 	}
-	fmt.Printf("approval2 action recv (%v)\n", request)
+	fmt.Printf("action (%s) recv (%v)\n", name, request)
 	ctx.JSON(http.StatusOK, "")
 
-	RespToApiServer("approval", request.FlowId, request.StepName, request.AckState, request.UUID, true)
+	RespToApiServer("approval2", request.FlowId, request.StepName, request.AckStates[0], request.UUID, true)
 }

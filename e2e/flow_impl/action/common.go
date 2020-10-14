@@ -23,7 +23,7 @@ func RespToApiServer(action, flowId, stepName, ackState, uuid string, done bool)
 	resp := &Response{
 		FlowId:   flowId,
 		StepName: stepName,
-		AckState: strings.Split(ackState, ",")[0],
+		AckState: ackState,
 		UUID:     uuid,
 		Done:     done,
 	}

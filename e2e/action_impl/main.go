@@ -3,20 +3,18 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
-	"strings"
-
 	"github.com/gin-gonic/gin"
 	"github.com/go-resty/resty/v2"
+	"net/http"
 )
 
 type request struct {
-	FlowId           string `json:"flowId"`
-	StepName         string `json:"stepName"`
-	AckState         string `json:"ackState"`
-	UUID             string `json:"uuid"`
-	Pipeline         string `json:"pipeline"`
-	PipelineResource string `json:"pipelineResource"`
+	FlowId           string   `json:"flowId"`
+	StepName         string   `json:"stepName"`
+	AckStates        []string `json:"ackStates"`
+	UUID             string   `json:"uuid"`
+	Pipeline         string   `json:"pipeline"`
+	PipelineResource string   `json:"pipelineResource"`
 }
 
 type response struct {
@@ -39,7 +37,7 @@ func resp(url string) {
 		resp := &response{
 			FlowId:   currentReq.FlowId,
 			StepName: currentReq.StepName,
-			AckState: strings.Split(currentReq.AckState, ",")[0],
+			AckState: currentReq.AckStates[0],
 			UUID:     currentReq.UUID,
 			Done:     true,
 		}

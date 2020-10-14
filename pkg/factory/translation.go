@@ -37,6 +37,8 @@ CREATE:
 			HistoryStates: []string{fsm.READY},
 		},
 	}
+	fr.GenerateVersion()
+
 	// check step action if exist
 	for _, step := range stmt.Steps {
 		action, err := t.GetAction(step.Action.Name)
@@ -80,7 +82,8 @@ CREATE:
 				Kind: resource.StepKind,
 			},
 			Spec: resource.StepSpec{
-				FlowID: stmt.Flow,
+				FlowID:      stmt.Flow,
+				FlowRunUUID: fr.GetUUID(),
 				ActionRun: resource.ActionRun{
 					ActionName:     step.Action.Name,
 					ActionParams:   actionParams,

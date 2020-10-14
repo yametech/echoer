@@ -4,16 +4,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-resty/resty/v2"
-	"reflect"
 	"strings"
 )
 
 type http struct {
-	Uri       string            `json:"uri" bson:"uri"`
-	Header    map[string]string `json:"header" bson:"header"`
-	Method    string            `json:"method" bson:"method"`
-	Arguments map[string]string `json:"arguments" bson:"arguments"`
-	AuthToken string            `json:"auth_token"`
+	Uri       string                 `json:"uri" bson:"uri"`
+	Header    map[string]string      `json:"header" bson:"header"`
+	Method    string                 `json:"method" bson:"method"`
+	Arguments map[string]interface{} `json:"arguments" bson:"arguments"`
+	AuthToken string                 `json:"auth_token"`
 	Response  struct {
 		Status int         `json:"status" bson:"status"`
 		Error  interface{} `json:"error" bson:"error"`
@@ -48,42 +47,41 @@ func (http *http) HttpInterface() HttpInterface {
 }
 
 func (http *http) Post(urls []string) HttpInterface {
-	for _, url := range urls {
-		http._call = append(http._call,
-			func() error {
-				req := http.request()
-				body, err := json.Marshal(http.Arguments)
-				if err != nil {
-					return err
+	if len(http._call) > 0 {
+		http._call = http._call[:0]
+	}
+	for index, url := range urls {
+		_ = url
+		_url := urls[index]
+		_func := func() error {
+			req := http.request()
+			body, err := json.Marshal(http.Arguments)
+			if err != nil {
+				return err
+			}
+			req.SetBody(body)
+			response, err := req.Post(_url)
+			if response != nil {
+				http.Response.Status = response.StatusCode()
+				http.Response.Error = response.Error()
+				if http.Response.Status != 200 {
+					return fmt.Errorf("webhook post to (%s) response code (%d)", url, response.StatusCode())
 				}
-				req.SetBody(body)
-				response, err := req.Post(url)
-				if response != nil {
-					http.Response.Status = response.StatusCode()
-					http.Response.Error = response.Error()
-				}
-				if err != nil {
-					return err
-				}
-				return nil
-			})
+			}
+			if err != nil {
+				return err
+			}
+			return nil
+		}
+		http._call = append(http._call, _func)
 	}
 	return http
 }
 
 func (http *http) Params(p map[string]interface{}) HttpInterface {
-	http.Arguments = make(map[string]string)
+	http.Arguments = make(map[string]interface{})
 	for k, v := range p {
-		rt := reflect.TypeOf(v)
-		switch rt.Kind() {
-		case reflect.String:
-			http.Arguments[k] = fmt.Sprintf("%s", v)
-		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
-			reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-			http.Arguments[k] = fmt.Sprintf("%d", v)
-		default:
-			http.Arguments[k] = fmt.Sprintf("%v", v)
-		}
+		http.Arguments[k] = v
 	}
 	return http
 }
@@ -98,7 +96,8 @@ func (http *http) Do() error {
 		return err
 	}
 	for i, f := range http._call {
-		if err := f(); err != nil {
+		_func := f
+		if err := _func(); err != nil {
 			if (i + 1) == len(http._call) {
 				return err
 			}

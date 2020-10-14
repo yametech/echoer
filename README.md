@@ -86,6 +86,8 @@ flow_run my_flow_run
         args=(project="nz00001",version=12343);
     };
 flow_run_end
+/
+
 ```
 
 2. your code
@@ -105,12 +107,12 @@ The "ci" action has args (str project,str version,int retry_count) , so the busi
 type ciRequest struct {
 	FlowId   string `json:"flowId"`
 	StepName string `json:"stepName"`
-	AckState string `json:"ackState"`
+	AckStates []string `json:"ackStates"`
 	UUID     string `json:"uuid"`
 	//ci action args
 	Project    string `json:"project"`
-	Version    int    `json:"version"`
-	RetryCount string `json:"retry_count"`
+	Version    int64   `json:"version"`
+	RetryCount int64 `json:"retry_count"`
 }
 ```
  
@@ -128,3 +130,6 @@ type Response struct {
 
 
 3. terminal access to api-server
+```
+
+```
