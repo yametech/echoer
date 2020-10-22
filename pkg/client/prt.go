@@ -72,7 +72,7 @@ func (p *printer) printResponse(resp *api.ExecuteCommandResponse) {
 	case api.CommandExecutionReply_NIL:
 		p.println(p.nilColor.Sprint(nilString))
 	case api.CommandExecutionReply_Raw:
-		p.println(fmt.Sprintf("R| %s", resp.Raw))
+		p.println(fmt.Sprintf("R| \n%s", resp.Raw))
 	case api.CommandExecutionReply_ERR:
 		_, _ = p.errColor.Fprintf(p.out, "E| %s\n", resp.Raw)
 	default:
