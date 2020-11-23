@@ -94,7 +94,15 @@ func (p *fssLex) Lex(lval *fssSymType) int {
 		lval._dict = result
 		return DICT
 	case C.STRING_VALUE:
-		lval._string = strings.TrimSuffix(strings.TrimPrefix(p.yytext, `"`), `"`)
+		if len(p.yytext) < 1 {
+			return STRING_VALUE
+		}
+		switch p.yytext[0] {
+		case '"':
+			lval._string = strings.TrimSuffix(strings.TrimPrefix(p.yytext, `"`), `"`)
+		case '`':
+			lval._string = strings.TrimSuffix(strings.TrimPrefix(p.yytext, "`"), "`")
+		}
 		return STRING_VALUE
 	case C.FLOW:
 		return FLOW

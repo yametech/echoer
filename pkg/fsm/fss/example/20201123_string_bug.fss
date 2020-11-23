@@ -1,0 +1,3 @@
+flow_run  flow_cd_1
+ step A => (SUCCESS->done | FAIL->done) {action = "artifactoryCD"; args = (serviceName="test-deploy",serviceImage="nginx",deployNamespace="dxp",deployType="web",artifactInfo=`{"servicePorts":[{"name":"test","protocol":"TCP","port":80,"targetPort":80}]}`,cpuLimit="1024m",memLimit="1024M",cpuRequests="300m",memRequests="100M",replicas=2);};
+flow_run_end

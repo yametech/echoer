@@ -48,6 +48,7 @@
 list\((.*,.*)\)                        { return LIST; }
 dict\((.*=.*)\)                        { return DICT; }
 \"([^\"]*)\"                           { return STRING_VALUE; }
+\`([^\`].*)\`                          { return STRING_VALUE; }
 [_a-z_A-Z_][_a-z_A-Z_0-9_]*            { return IDENTIFIER; }
 
 \n     { /* ignore whitespace */ }
