@@ -314,7 +314,7 @@ extern int yylex (void);
 #undef YY_DECL
 #endif
 
-#line 57 "fss.l"
+#line 58 "fss.l"
 
 
 #line 321 "fss.lex.h"
