@@ -98,7 +98,7 @@ func (m *Mongo) List(namespace, resource, labels string) ([]interface{}, error) 
 	if err := cursor.All(ctx, &_results); err != nil {
 		return nil, err
 	}
-	results := make([]interface{}, 0, len(_results))
+	results := make([]interface{}, 0)
 	for index := range _results {
 		results = append(results, _results[index])
 	}

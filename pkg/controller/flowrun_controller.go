@@ -215,6 +215,10 @@ func (f *FlowRunController) stepGraph(step resource.Step, first, last bool) erro
 			}
 			// create target step based on call
 			expectStateStep := f.getStep(expectStep)
+			if expectStateStep == nil {
+				fmt.Printf("[ERROR] step %s is not found", step.GetName())
+				return
+			}
 			if err := f.fsi.Create(expectStateStep); err != nil {
 				f.Spec.LastErr = err.Error()
 			}
