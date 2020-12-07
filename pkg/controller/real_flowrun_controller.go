@@ -49,6 +49,7 @@ func (s *FlowController) recv() error {
 			flowRunObj := &resource.FlowRun{}
 			if err := core.UnmarshalInterfaceToResource(&item, flowRunObj); err != nil {
 				fmt.Printf("[ERROR] reconcile error %s\n", err)
+				continue
 			}
 			if flowRunObj.GetResourceVersion() > version {
 				version = flowRunObj.GetResourceVersion()
