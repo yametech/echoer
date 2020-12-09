@@ -66,10 +66,12 @@ func (http *http) Post(urls []string) HttpInterface {
 				http.Response.Error = response.Error()
 				if http.Response.Status != 200 {
 					return fmt.Errorf(
-						"webhook post to (%s) response code (%d) data (%s)",
+						"webhook post to (%s) response code (%d) data (%v) error (%s)",
 						url,
 						response.StatusCode(),
-						http.Arguments)
+						http.Arguments,
+						response.Error(),
+					)
 				}
 			}
 			if err != nil {
