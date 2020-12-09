@@ -151,7 +151,7 @@ func (a *ActionController) realAction(obj *resource.Step) error {
 				obj.Spec.FlowID, obj.GetName(), obj.Spec.ActionName, err)
 			a.tq.Schedule(
 				&DelayStepAction{obj, a.IStorage},
-				time.Now().Add(time.Duration(least(obj.Spec.RetryCount))*time.Second),
+				time.Now().Add(3*time.Second),
 			)
 		}
 	case resource.GRPC:
@@ -161,9 +161,9 @@ func (a *ActionController) realAction(obj *resource.Step) error {
 	return nil
 }
 
-func least(i int32) int32 {
-	if i == 0 {
-		return 1
-	}
-	return i
-}
+//func least(i int32) int32 {
+//	if i == 0 {
+//		return 1
+//	}
+//	return i
+//}
