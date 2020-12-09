@@ -17,7 +17,7 @@ func main() {
 	fmt.Println(fmt.Sprintf("echoer api server start...,%v", time.Now()))
 	stage, err := mongo.NewMongo(storageUri)
 	if err != nil {
-		panic(fmt.Sprint("can't not open storage %s", err))
+		panic(fmt.Sprintf("can't not open storage %s", err))
 	}
 	server := api.NewServer(stage)
 
