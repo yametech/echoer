@@ -27,7 +27,7 @@ type Server struct {
 func NewServer(storage storage.IStorage) *Server {
 	server := &Server{
 		IStorage:    storage,
-		middlewares: make([]gin.HandlerFunc, 0),
+		middlewares: []gin.HandlerFunc{gin.Logger(), gin.Recovery()},
 		parser:      command.NewParser(storage),
 	}
 	server.Handle = &Handle{Server: server}
