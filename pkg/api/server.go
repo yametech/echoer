@@ -50,7 +50,7 @@ func (s *Server) Run(addr string) error {
 	router.POST("/action", s.actionCreate)
 	router.GET("/action", s.actionList)
 	router.GET("/action/:name", s.actionGet)
-	router.DELETE("/action/:name", s.actionDelete)
+	router.DELETE("/action/:name/:uuid", s.actionDelete)
 
 	// event
 	router.POST("/event", s.eventCreate)
