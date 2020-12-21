@@ -1,7 +1,7 @@
 /*
 	MIT License
 	gtm (go tail mongo) is a MongoDB event listener
-	from by github.com/rwynn/gtm/v2
+		from by github.com/rwynn/gtm/v2
 */
 package gtm
 

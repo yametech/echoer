@@ -17,13 +17,15 @@ func main() {
 
 	fmt.Println(fmt.Sprintf("echoer flow-controller start... %v", time.Now()))
 
-	stage, err := mongo.NewMongo(storageUri)
-
+	stage, err, errC := mongo.NewMongo(storageUri)
 	if err != nil {
 		panic(err)
 	}
-	server := controller.NewFlowController(stage)
-	if err := server.Run(); err != nil {
-		panic(err)
-	}
+	go func() {
+		if err := controller.NewFlowController(stage).Run(); err != nil {
+			errC <- err
+		}
+	}()
+
+	panic(<-errC)
 }
