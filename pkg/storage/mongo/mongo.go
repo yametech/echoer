@@ -13,6 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/bsontype"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
 const (
@@ -37,12 +38,23 @@ type Mongo struct {
 	client *mongo.Client
 }
 
-func NewMongo(uri string) (*Mongo, error) {
+func NewMongo(uri string) (*Mongo, error, chan error) {
 	client, err := connect(uri)
 	if err != nil {
-		return nil, err
+		return nil, err, nil
 	}
-	return &Mongo{uri: uri, client: client}, nil
+
+	investigationErrorChannel := make(chan error)
+	go func() {
+		for {
+			time.Sleep(1 * time.Second)
+			if err := client.Ping(context.Background(), readpref.Primary()); err != nil {
+				investigationErrorChannel <- err
+			}
+		}
+	}()
+
+	return &Mongo{uri: uri, client: client}, nil, investigationErrorChannel
 }
 
 func connect(uri string) (*mongo.Client, error) {

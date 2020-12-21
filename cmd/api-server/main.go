@@ -15,7 +15,7 @@ func main() {
 	flag.Parse()
 
 	fmt.Println(fmt.Sprintf("echoer api server start...,%v", time.Now()))
-	stage, err := mongo.NewMongo(storageUri)
+	stage, err, errC := mongo.NewMongo(storageUri)
 	if err != nil {
 		panic(fmt.Sprintf("can't not open storage error (%s)", err))
 	}
@@ -35,6 +35,13 @@ func main() {
 		}
 	}()
 
-	panic(<-errChan)
+	for {
+		select {
+		case e := <-errC:
+			panic(e)
+		case e := <-errChan:
+			panic(e)
+		}
+	}
 
 }

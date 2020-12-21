@@ -16,13 +16,19 @@ func main() {
 	flag.Parse()
 
 	fmt.Println(fmt.Sprintf("echoer action-controller start... %v", time.Now()))
-	stage, err := mongo.NewMongo(storageUri)
+
+	stage, err, errC := mongo.NewMongo(storageUri)
 	if err != nil {
 		panic(err)
 	}
-	hc := action.NewHookClient()
-	server := controller.NewActionController(stage, hc)
-	if err := server.Run(); err != nil {
-		panic(err)
-	}
+
+	go func() {
+		hc := action.NewHookClient()
+		if err := controller.NewActionController(stage, hc).Run(); err != nil {
+			errC <- err
+		}
+	}()
+
+	panic(<-errC)
+
 }
