@@ -47,7 +47,7 @@ func (h *Handle) ackStep(g *gin.Context) {
 	ackStep := &ackStepState{}
 	if err := g.ShouldBindJSON(ackStep); err != nil {
 		RequestParamsError(g, "bind data param is wrong", err)
-		fmt.Printf("client (%s) post request (%s) wrong\n", g.Request.Host, g.Request.Body)
+		fmt.Printf("[INFO] client (%s) post request (%s) wrong\n", g.Request.Host, g.Request.Body)
 		return
 	}
 
@@ -55,7 +55,7 @@ func (h *Handle) ackStep(g *gin.Context) {
 	err := h.GetByUUID(common.DefaultNamespace, common.Step, ackStep.UUID, step)
 	if err != nil {
 		InternalError(g, "get data error or maybe not found", err)
-		fmt.Printf("flowrun (%s) step (%s) query error (%s)\n", ackStep.FlowId, ackStep.StepName, err)
+		fmt.Printf("[INFO] flowrun (%s) step (%s) query error (%s)\n", ackStep.FlowId, ackStep.StepName, err)
 		return
 	}
 
@@ -65,7 +65,7 @@ func (h *Handle) ackStep(g *gin.Context) {
 	_, _, err = h.Apply(common.DefaultNamespace, common.Step, step.GetName(), step)
 	if err != nil {
 		InternalError(g, "apply data error", err)
-		fmt.Printf("flowrun (%s) step (%s) apply error (%s)\n", ackStep.FlowId, ackStep.StepName, err)
+		fmt.Printf("[INFO] flowrun (%s) step (%s) apply error (%s)\n", ackStep.FlowId, ackStep.StepName, err)
 		return
 	}
 

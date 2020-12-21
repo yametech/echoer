@@ -40,7 +40,8 @@ func (s *Server) RegistryMiddlewares(h gin.HandlerFunc) {
 
 func (s *Server) Run(addr string) error {
 	router := gin.New()
-	router.Use(s.middlewares...)
+	router.Use(gin.Logger(), gin.Recovery())
+
 	router.GET("/", func(g *gin.Context) { g.JSON(http.StatusOK, "echoer") })
 
 	// watch
