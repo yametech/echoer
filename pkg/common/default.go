@@ -23,4 +23,5 @@ type Common struct {
 	StepName string `json:"stepName"`
 	AckState string `json:"ackState"`
 	UUID     string `json:"uuid"`
+	Data     string `json:"data"`
 }

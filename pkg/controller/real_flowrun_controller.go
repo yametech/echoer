@@ -151,6 +151,7 @@ func (s *FlowController) reconcileStep(obj *resource.Step) error {
 		}
 		flowRun.Spec.Steps[index].Spec.Response.State = obj.Spec.State
 		flowRun.Spec.Steps[index].Spec.ActionRun.Done = obj.Spec.Done
+		flowRun.Spec.Steps[index].Spec.Data = obj.Spec.Data
 	}
 	if _, _, err := s.Apply(common.DefaultNamespace, common.FlowRunCollection, flowRun.GetName(), flowRun); err != nil {
 		return err

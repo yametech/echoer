@@ -22,6 +22,7 @@ type response struct {
 	StepName string `json:"stepName"`
 	AckState string `json:"ackState"`
 	UUID     string `json:"uuid"`
+	Data     string `json:"data"`
 	Done     bool   `json:"done"`
 }
 
@@ -39,6 +40,7 @@ func resp(url string) {
 			StepName: currentReq.StepName,
 			AckState: currentReq.AckStates[0],
 			UUID:     currentReq.UUID,
+			Data:     "test_data",
 			Done:     true,
 		}
 		body, _ := json.Marshal(resp)
