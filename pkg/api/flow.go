@@ -68,7 +68,7 @@ func (h *Handle) flowDelete(g *gin.Context) {
 	var result = &resource.Flow{}
 	name := g.Param("name")
 	uuid := g.Param("uuid")
-	if name == "" {
+	if name == "" || uuid == "" {
 		RequestParamsError(g, "delete data param is wrong", nil)
 		return
 	}

@@ -38,6 +38,22 @@ func (h *Handle) stepGet(g *gin.Context) {
 	g.JSON(http.StatusOK, result)
 }
 
+func (h *Handle) stepDelete(g *gin.Context) {
+	var result = &resource.Step{}
+	name := g.Param("name")
+	uuid := g.Param("uuid")
+	if name == "" || uuid == "" {
+		RequestParamsError(g, "delete data param is wrong", nil)
+		return
+	}
+	err := h.Delete(common.DefaultNamespace, common.Step, name, uuid)
+	if err != nil {
+		InternalError(g, "delete data error or maybe not found", err)
+		return
+	}
+	g.JSON(http.StatusOK, result)
+}
+
 type ackStepState struct {
 	common.Common
 	Done bool `json:"done"`

@@ -61,17 +61,18 @@ func (s *Server) Run(addr string) error {
 	router.POST("/flow", s.flowCreate)
 	router.GET("/flow", s.flowList)
 	router.GET("/flow/:name", s.flowGet)
-	router.DELETE("/flow/:name", s.flowDelete)
+	router.DELETE("/flow/:name/:uuid", s.flowDelete)
 
 	//flowrun
 	router.POST("/flowrun", s.flowRunCreate)
 	router.GET("/flowrun", s.flowRunList)
 	router.GET("/flowrun/:name", s.flowRunGet)
-	router.DELETE("/flowrun/:name", s.flowRunDelete)
+	router.DELETE("/flowrun/:name/:uuid", s.flowRunDelete)
 
 	//step
 	// POST recv action response state
 	router.POST("/step", s.ackStep)
+	router.DELETE("/step/:name/:uuid",s.stepDelete)
 
 	if err := router.Run(addr); err != nil {
 		return err

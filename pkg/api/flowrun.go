@@ -68,13 +68,13 @@ func (h *Handle) flowRunDelete(g *gin.Context) {
 	var result = &resource.Flow{}
 	name := g.Param("name")
 	uuid := g.Param("uuid")
-	if name == "" {
+	if name == "" || uuid == "" {
 		RequestParamsError(g, "delete data param is wrong", nil)
 		return
 	}
 	err := h.Delete(common.DefaultNamespace, common.FlowRunCollection, name, uuid)
 	if err != nil {
-		InternalError(g, "get data error or maybe not found", err)
+		InternalError(g, "delete data error or maybe not found", err)
 		return
 	}
 	g.JSON(http.StatusOK, result)
