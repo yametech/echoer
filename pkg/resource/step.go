@@ -13,7 +13,8 @@ type StepSpec struct {
 	FlowRunUUID string `json:"flow_run_uuid" bson:"flow_run_uuid"`
 	ActionRun   `json:"action_run" bson:"action_run"`
 	Response    `json:"response" bson:"response"`
-	RetryCount  int32 `json:"retry_count" bson:"retry_count"`
+	Data        string `json:"data" bson:"data"`
+	RetryCount  int32  `json:"retry_count" bson:"retry_count"`
 }
 
 type Response struct {
