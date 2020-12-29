@@ -78,6 +78,7 @@ func (h *Handle) ackStep(g *gin.Context) {
 	step.Spec.Response.State = ackStep.AckState
 	step.Spec.ActionRun.Done = ackStep.Done
 	step.Spec.Data = ackStep.Data
+	step.Spec.GlobalVariables = ackStep.GlobalVariables
 
 	_, _, err = h.Apply(common.DefaultNamespace, common.Step, step.GetName(), step)
 	if err != nil {

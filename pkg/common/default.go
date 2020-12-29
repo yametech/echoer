@@ -12,10 +12,11 @@ const (
 type ActionParamIdType = string
 
 const (
-	FlowId    ActionParamIdType = "flowId"
-	StepName  ActionParamIdType = "stepName"
-	AckStates ActionParamIdType = "ackStates"
-	UUID      ActionParamIdType = "uuid"
+	FlowId          ActionParamIdType = "flowId"
+	StepName        ActionParamIdType = "stepName"
+	AckStates       ActionParamIdType = "ackStates"
+	UUID            ActionParamIdType = "uuid"
+	GlobalVariables ActionParamIdType = "globalVariables"
 )
 
 type Common struct {
@@ -23,5 +24,7 @@ type Common struct {
 	StepName string `json:"stepName"`
 	AckState string `json:"ackState"`
 	UUID     string `json:"uuid"`
-	Data     string `json:"data"`
+	// add data info and globalVariables
+	GlobalVariables map[string]interface{} `json:"globalVariables"`
+	Data            string                 `json:"data"`
 }
