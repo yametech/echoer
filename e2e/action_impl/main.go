@@ -9,11 +9,13 @@ import (
 )
 
 type request struct {
-	FlowId          string            `json:"flowId"`
-	StepName        string            `json:"stepName"`
-	AckStates       []string          `json:"ackStates"`
-	UUID            string            `json:"uuid"`
-	GlobalVariables map[string]string `globalVariables`
+	FlowId    string   `json:"flowId"`
+	StepName  string   `json:"stepName"`
+	AckStates []string `json:"ackStates"`
+	UUID      string   `json:"uuid"`
+
+	// Serialization of global parameters, flowrun parameters will be passed over
+	GlobalVariables map[string]string `json:"globalVariables"`
 
 	Pipeline         string `json:"pipeline"`
 	PipelineResource string `json:"pipelineResource"`
