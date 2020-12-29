@@ -152,6 +152,13 @@ func (s *FlowController) reconcileStep(obj *resource.Step) error {
 		flowRun.Spec.Steps[index].Spec.Response.State = obj.Spec.State
 		flowRun.Spec.Steps[index].Spec.ActionRun.Done = obj.Spec.Done
 		flowRun.Spec.Steps[index].Spec.Data = obj.Spec.Data
+		flowRun.Spec.Steps[index].Spec.GlobalVariables = obj.Spec.GlobalVariables
+		for k, v := range obj.Spec.GlobalVariables {
+			if flowRun.Spec.GlobalVariables == nil {
+				flowRun.Spec.GlobalVariables = make(map[string]interface{})
+			}
+			flowRun.Spec.GlobalVariables[k] = v
+		}
 	}
 	if _, _, err := s.Apply(common.DefaultNamespace, common.FlowRunCollection, flowRun.GetName(), flowRun); err != nil {
 		return err

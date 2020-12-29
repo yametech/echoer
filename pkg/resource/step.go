@@ -15,6 +15,8 @@ type StepSpec struct {
 	Response    `json:"response" bson:"response"`
 	Data        string `json:"data" bson:"data"`
 	RetryCount  int32  `json:"retry_count" bson:"retry_count"`
+
+	GlobalVariables map[string]interface{} `json:"global_variables" bson:"global_variables"`
 }
 
 type Response struct {

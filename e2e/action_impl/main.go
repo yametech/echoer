@@ -9,21 +9,24 @@ import (
 )
 
 type request struct {
-	FlowId           string   `json:"flowId"`
-	StepName         string   `json:"stepName"`
-	AckStates        []string `json:"ackStates"`
-	UUID             string   `json:"uuid"`
-	Pipeline         string   `json:"pipeline"`
-	PipelineResource string   `json:"pipelineResource"`
+	FlowId          string            `json:"flowId"`
+	StepName        string            `json:"stepName"`
+	AckStates       []string          `json:"ackStates"`
+	UUID            string            `json:"uuid"`
+	GlobalVariables map[string]string `globalVariables`
+
+	Pipeline         string `json:"pipeline"`
+	PipelineResource string `json:"pipelineResource"`
 }
 
 type response struct {
-	FlowId   string `json:"flowId"`
-	StepName string `json:"stepName"`
-	AckState string `json:"ackState"`
-	UUID     string `json:"uuid"`
-	Data     string `json:"data"`
-	Done     bool   `json:"done"`
+	FlowId          string                 `json:"flowId"`
+	StepName        string                 `json:"stepName"`
+	AckState        string                 `json:"ackState"`
+	UUID            string                 `json:"uuid"`
+	GlobalVariables map[string]interface{} `json:"globalVariables"`
+	Data            string                 `json:"data"`
+	Done            bool                   `json:"done"`
 }
 
 var (
@@ -36,12 +39,13 @@ func resp(url string) {
 		<-responseChan
 		req := resty.New()
 		resp := &response{
-			FlowId:   currentReq.FlowId,
-			StepName: currentReq.StepName,
-			AckState: currentReq.AckStates[0],
-			UUID:     currentReq.UUID,
-			Data:     "test_data",
-			Done:     true,
+			FlowId:          currentReq.FlowId,
+			StepName:        currentReq.StepName,
+			AckState:        currentReq.AckStates[0],
+			UUID:            currentReq.UUID,
+			GlobalVariables: map[string]interface{}{"test_global_variables": "yes"},
+			Data:            "test_data",
+			Done:            true,
 		}
 		body, _ := json.Marshal(resp)
 		fmt.Printf("response to api-server %s\n", body)

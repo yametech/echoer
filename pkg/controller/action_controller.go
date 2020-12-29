@@ -140,6 +140,7 @@ func (a *ActionController) realAction(obj *resource.Step) error {
 	obj.Spec.ActionParams[common.StepName] = obj.GetName()
 	obj.Spec.ActionParams[common.AckStates] = _action.Spec.ReturnStates
 	obj.Spec.ActionParams[common.UUID] = obj.UUID
+	obj.Spec.ActionParams[common.GlobalVariables] = obj.Spec.GlobalVariables
 
 	switch _action.Spec.ServeType {
 	case resource.HTTP:

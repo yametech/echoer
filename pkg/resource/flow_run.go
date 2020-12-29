@@ -19,6 +19,8 @@ type FlowRunSpec struct {
 	CurrentState  string   `json:"current_state" bson:"current_state"`
 	LastEvent     string   `json:"last_event" bson:"last_event"`
 	LastErr       string   `json:"last_err" bson:"last_err"`
+
+	GlobalVariables map[string]interface{} `json:"global_variable" bson:"global_variable"`
 }
 
 func (f FlowRunSpec) GetStepByName(name string) (*Step, error) {
