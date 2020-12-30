@@ -149,17 +149,19 @@ func (a *ActionController) realAction(obj *resource.Step) error {
 
 	switch _action.Spec.ServeType {
 	case resource.HTTP:
-		hc := a.act.HttpInterface().
-			Params(obj.Spec.ActionParams).
-			Post(_action.Spec.Endpoints)
-		if err := hc.Do(); err != nil {
-			fmt.Printf("[INFO] flow (%s) step (%s) execute action (%s) error: %s\n",
-				obj.Spec.FlowID, obj.GetName(), obj.Spec.ActionName, err)
-			a.tq.Schedule(
-				&DelayStepAction{obj, a.IStorage},
-				time.Now().Add(3*time.Second),
-			)
-		}
+		go func() {
+			hc := a.act.HttpInterface().
+				Params(obj.Spec.ActionParams).
+				Post(_action.Spec.Endpoints)
+			if err := hc.Do(); err != nil {
+				fmt.Printf("[INFO] flow (%s) step (%s) execute action (%s) error: %s\n",
+					obj.Spec.FlowID, obj.GetName(), obj.Spec.ActionName, err)
+				a.tq.Schedule(
+					&DelayStepAction{obj, a.IStorage},
+					time.Now().Add(3*time.Second),
+				)
+			}
+		}()
 	case resource.GRPC:
 		// TODO current unsupported grpc
 	}
