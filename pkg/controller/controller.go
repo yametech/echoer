@@ -2,13 +2,11 @@ package controller
 
 import (
 	"fmt"
-	"time"
-
-	"github.com/laik/timerqueue"
 	"github.com/yametech/echoer/pkg/common"
 	"github.com/yametech/echoer/pkg/fsm"
 	"github.com/yametech/echoer/pkg/resource"
 	"github.com/yametech/echoer/pkg/storage"
+	"time"
 )
 
 type Controller interface {
@@ -16,14 +14,32 @@ type Controller interface {
 	Stop() error
 }
 
-var _ timerqueue.Timer = &DelayStepAction{}
+// Timer is an interface that types implement to schedule and receive OnTimer
+// callbacks.
+type Timer interface {
+	OnTimer(t <-chan struct{})
+}
+
+type Queue struct{}
+
+func (q *Queue) Schedule(t Timer, duration time.Duration) {
+	after := time.After(duration)
+	<-after
+	sig := make(chan struct{})
+	defer func() { close(sig) }()
+	go t.OnTimer(sig)
+	sig <- struct{}{}
+}
+
+var _ Timer = &DelayStepAction{}
 
 type DelayStepAction struct {
 	step *resource.Step
 	storage.IStorage
 }
 
-func (dsa *DelayStepAction) OnTimer(t time.Time) {
+func (dsa *DelayStepAction) OnTimer(t <-chan struct{}) {
+	<-t
 	dsa.step.Spec.RetryCount += 1
 	// check the flow run state
 	// if flow stopped the stop requeue
@@ -45,5 +61,5 @@ func (dsa *DelayStepAction) OnTimer(t time.Time) {
 		return
 	}
 
-	fmt.Printf("[INFO] requeue step action (%s) time:(%s) \n", dsa.step.GetName(), t.String())
+	fmt.Printf("[INFO] requeue step action (%s) \n", dsa.step.GetName())
 }
