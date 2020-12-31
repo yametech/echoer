@@ -136,6 +136,11 @@ func (a *ActionController) realAction(obj *resource.Step) error {
 		return err
 	}
 
+	_flowRun := &resource.FlowRun{}
+	if err := a.Get(common.DefaultNamespace, common.FlowRunCollection, obj.Spec.FlowID, _flowRun); err != nil {
+		return err
+	}
+
 	obj.Spec.ActionParams[common.FlowId] = obj.Spec.FlowID
 	obj.Spec.ActionParams[common.StepName] = obj.GetName()
 	obj.Spec.ActionParams[common.AckStates] = _action.Spec.ReturnStates
