@@ -22,7 +22,7 @@ type ActionController struct {
 	tq     *timerqueue.Queue
 }
 
-func NewActionController(stage storage.IStorage, act action.Interface) *ActionController {
+func NewActionController(stage storage.IStorage) *ActionController {
 	tq := timerqueue.New()
 	server := &ActionController{
 		stop:     make(chan struct{}),
