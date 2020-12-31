@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/laik/timerqueue"
 	"github.com/yametech/echoer/pkg/action"
 	"github.com/yametech/echoer/pkg/common"
 	"github.com/yametech/echoer/pkg/core"
@@ -19,39 +18,18 @@ type ActionController struct {
 	storage.IStorage
 	//act    action.Interface
 	tqStop chan struct{}
-	tq     *timerqueue.Queue
+	tq     *Queue
 }
 
 func NewActionController(stage storage.IStorage) *ActionController {
-	tq := timerqueue.New()
 	server := &ActionController{
 		stop:     make(chan struct{}),
 		IStorage: stage,
 		//act:      act,
 		tqStop: make(chan struct{}),
-		tq:     tq,
+		tq:     &Queue{},
 	}
-	go server.waitingLoop()
 	return server
-}
-
-func (a *ActionController) waitingLoop() {
-	for {
-		select {
-		case <-a.tqStop:
-			return
-		default:
-		}
-		for a.tq.Len() > 0 {
-			now := time.Now()
-			_, _time := a.tq.PeekFirst()
-			if now.After(_time) {
-				f, t := a.tq.PopFirst()
-				f.OnTimer(t)
-			}
-		}
-		time.Sleep(500 * time.Millisecond)
-	}
 }
 
 func (a *ActionController) Stop() error {
@@ -166,7 +144,7 @@ func (a *ActionController) realAction(obj *resource.Step) error {
 				)
 				a.tq.Schedule(
 					&DelayStepAction{obj, a.IStorage},
-					time.Now().Add(3*time.Second),
+					3*time.Second,
 				)
 			}
 		}()
@@ -176,10 +154,3 @@ func (a *ActionController) realAction(obj *resource.Step) error {
 
 	return nil
 }
-
-//func least(i int32) int32 {
-//	if i == 0 {
-//		return 1
-//	}
-//	return i
-//}
