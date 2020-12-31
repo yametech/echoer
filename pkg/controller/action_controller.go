@@ -22,7 +22,7 @@ type ActionController struct {
 	tq     *timerqueue.Queue
 }
 
-func NewActionController(stage storage.IStorage) *ActionController {
+func NewActionController(stage storage.IStorage, act action.Interface) *ActionController {
 	tq := timerqueue.New()
 	server := &ActionController{
 		stop:     make(chan struct{}),
@@ -133,11 +133,6 @@ func (a *ActionController) realAction(obj *resource.Step) error {
 	}
 
 	if err := resource.CheckActionParams(obj.Spec.ActionParams, _action.Spec.Params); err != nil {
-		return err
-	}
-
-	_flowRun := &resource.FlowRun{}
-	if err := a.Get(common.DefaultNamespace, common.FlowRunCollection, obj.Spec.FlowID, _flowRun); err != nil {
 		return err
 	}
 
