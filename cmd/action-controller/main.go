@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/yametech/echoer/pkg/action"
 	"github.com/yametech/echoer/pkg/controller"
 	"github.com/yametech/echoer/pkg/storage/mongo"
 	"time"
@@ -23,8 +22,7 @@ func main() {
 	}
 
 	go func() {
-		hc := action.NewHookClient()
-		if err := controller.NewActionController(stage, hc).Run(); err != nil {
+		if err := controller.NewActionController(stage).Run(); err != nil {
 			errC <- err
 		}
 	}()
