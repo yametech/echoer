@@ -17,19 +17,19 @@ var _ Controller = &ActionController{}
 type ActionController struct {
 	stop chan struct{}
 	storage.IStorage
-	act    action.Interface
+	//act    action.Interface
 	tqStop chan struct{}
 	tq     *timerqueue.Queue
 }
 
-func NewActionController(stage storage.IStorage, act action.Interface) *ActionController {
+func NewActionController(stage storage.IStorage) *ActionController {
 	tq := timerqueue.New()
 	server := &ActionController{
 		stop:     make(chan struct{}),
 		IStorage: stage,
-		act:      act,
-		tqStop:   make(chan struct{}),
-		tq:       tq,
+		//act:      act,
+		tqStop: make(chan struct{}),
+		tq:     tq,
 	}
 	go server.waitingLoop()
 	return server
@@ -150,12 +150,20 @@ func (a *ActionController) realAction(obj *resource.Step) error {
 	switch _action.Spec.ServeType {
 	case resource.HTTP:
 		go func() {
-			hc := a.act.HttpInterface().
+			err := action.NewHookClient().
+				HttpInterface().
 				Params(obj.Spec.ActionParams).
-				Post(_action.Spec.Endpoints)
-			if err := hc.Do(); err != nil {
-				fmt.Printf("[INFO] flow (%s) step (%s) execute action (%s) error: %s\n",
-					obj.Spec.FlowID, obj.GetName(), obj.Spec.ActionName, err)
+				Post(_action.Spec.Endpoints).
+				Do()
+
+			if err != nil {
+				fmt.Printf(
+					"[INFO] flow (%s) step (%s) execute action (%s) error: %s\n",
+					obj.Spec.FlowID,
+					obj.GetName(),
+					obj.Spec.ActionName,
+					err,
+				)
 				a.tq.Schedule(
 					&DelayStepAction{obj, a.IStorage},
 					time.Now().Add(3*time.Second),
