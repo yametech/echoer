@@ -1,16 +1,20 @@
 action my_action
-	addr = "http://127.0.0.1:18080";
+	addr = "http://10.1.140.175:18080";
 	method = http;
 	args = (str pipeline,str pipelineResource);
 	return = (YES | NO );
 action_end
 /
 
-flow_run my_flow_run_5
-	step a3 => (YES->done){
+flow_run my_flow_run_6
+	step a3 => (YES->a4){
 		action=my_action;
 		args=(pipeline="a",pipelineResource="1");
 	};
+    step a4 => (YES->done){
+        action=my_action;
+        args=(pipeline="a",pipelineResource="1");
+    };
 flow_run_end
 /
 

@@ -25,12 +25,12 @@ func (h *Handle) stepList(g *gin.Context) {
 
 func (h *Handle) stepGet(g *gin.Context) {
 	var result = &resource.Step{}
-	uuid := g.Param("uuid")
-	if uuid == "" {
+	name := g.Param("name")
+	if name == "" {
 		RequestParamsError(g, "get data param is wrong", nil)
 		return
 	}
-	err := h.GetByUUID(common.DefaultNamespace, common.Step, uuid, result)
+	err := h.Get(common.DefaultNamespace, common.Step, name, result)
 	if err != nil {
 		InternalError(g, "get data error or maybe not found", err)
 		return

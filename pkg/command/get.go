@@ -3,10 +3,12 @@ package command
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/yametech/echoer/pkg/core"
-
 	"github.com/yametech/echoer/pkg/common"
+	"github.com/yametech/echoer/pkg/core"
+	"github.com/yametech/echoer/pkg/resource"
 	"github.com/yametech/echoer/pkg/storage"
+	"reflect"
+	"strings"
 )
 
 type Get struct {
@@ -25,12 +27,23 @@ func (g *Get) Execute(args ...string) Reply {
 	if storage.GetResourceCoder(resType) == nil {
 		return &ErrorReply{Message: fmt.Sprintf("this type (%s) is not supported", resType)}
 	}
+
 	result := make(map[string]interface{})
 	if err := g.Get(common.DefaultNamespace, resType, args[1], &result); err != nil {
 		return &ErrorReply{Message: fmt.Sprintf("resource (%s) (%s) not exist or get error (%s)", resType, args[1], err)}
 	}
-	format := NewFormat()
-	format.Header("name", "type", "version", "data")
+
+	switch resType {
+	case string(resource.FlowRunKind):
+		return g.flowRun(result)
+	case string(resource.FlowKind):
+		return g.flow(result)
+	case string(resource.StepKind):
+		return g.step(result)
+	case string(resource.ActionKind):
+		return g.action(result)
+	}
+
 	bs, err := json.Marshal(result)
 	if err != nil {
 		return &ErrorReply{Message: fmt.Sprintf("get resource (%s) unmarshal byte error (%s)", resType, err)}
@@ -40,18 +53,61 @@ func (g *Get) Execute(args ...string) Reply {
 	if err := core.JSONRawToResource(bs, obj); err != nil {
 		return &ErrorReply{Message: fmt.Sprintf("get resource (%s) unmarshal byte error (%s)", resType, err)}
 	}
-	var outData string
-	length := len(bs)
-	if length <= 100 {
-		outData = string(bs)
-	} else {
-		bs = bs[length-101:]
-		bs = append([]byte("..."), bs...)
-		outData = string(bs)
-	}
-	format.Row(obj.GetName(), resType, obj.GetUUID(), outData)
 
-	return &RawReply{Message: format.Out()}
+	return &RawReply{Message: bs}
+}
+
+func arrayToStrings(t interface{}) []string {
+	result := make([]string, 0)
+	if t != nil {
+		switch reflect.TypeOf(t).Kind() {
+		case reflect.Slice:
+			s := reflect.ValueOf(t)
+			for i := 0; i < s.Len(); i++ {
+				result = append(result, fmt.Sprintf("%s", s.Index(i)))
+			}
+		}
+	}
+	return result
+}
+
+func (g *Get) flowRun(result map[string]interface{}) Reply {
+	format := NewFormat()
+	format.Header("name", "uuid", "history_states", "global_variable")
+	format.Row(
+		fmt.Sprintf("%s", get(result, "metadata.name")),
+		fmt.Sprintf("%s", get(result, "metadata.uuid")),
+		strings.Join(arrayToStrings(get(result, "spec.history_states")), "\n"),
+		fmt.Sprintf("%s", get(result, "spec.global_variable")),
+	)
+	return &RawReply{format.Out()}
+}
+
+func (g *Get) step(result map[string]interface{}) Reply {
+	format := NewFormat()
+	format.Header("name", "flow_run_id", "response_state", "global_variables", "data")
+	format.Row(
+		fmt.Sprintf("%s", get(result, "metadata.name")),
+		fmt.Sprintf("%s", get(result, "spec.flow_id")),
+		fmt.Sprintf("%s", get(result, "spec.response.state")),
+		fmt.Sprintf("%s", get(result, "spec.global_variables")),
+		fmt.Sprintf("%s", get(result, "spec.data")),
+	)
+	return &RawReply{format.Out()}
+}
+
+func (g *Get) action(result map[string]interface{}) Reply {
+	format := NewFormat()
+	format.Header("name", "type", "version", "data")
+	format.Row()
+	return &RawReply{format.Out()}
+}
+
+func (g *Get) flow(result map[string]interface{}) Reply {
+	format := NewFormat()
+	format.Header("name", "type", "version", "data")
+	format.Row()
+	return &RawReply{format.Out()}
 }
 
 func (g *Get) Help() string {

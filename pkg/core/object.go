@@ -1,8 +1,6 @@
 package core
 
 import (
-	"bytes"
-	"encoding/gob"
 	"encoding/json"
 	"github.com/yametech/echoer/pkg/utils"
 	"time"
@@ -55,11 +53,8 @@ func (m *Metadata) GenerateVersion() IObject {
 }
 
 func Clone(src, tag interface{}) {
-	buff := new(bytes.Buffer)
-	enc := gob.NewEncoder(buff)
-	dec := gob.NewDecoder(buff)
-	_ = enc.Encode(src)
-	_ = dec.Decode(tag)
+	b, _ := json.Marshal(src)
+	_ = json.Unmarshal(b, tag)
 }
 
 func ToMap(i interface{}) (map[string]interface{}, error) {
