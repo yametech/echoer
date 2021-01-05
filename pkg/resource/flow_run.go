@@ -26,7 +26,8 @@ type FlowRunSpec struct {
 func (f FlowRunSpec) GetStepByName(name string) (*Step, error) {
 	var obj core.IObject
 	for index, item := range f.Steps {
-		if item.GetName() != name {
+		_getName := item.GetName()
+		if _getName != name {
 			continue
 		}
 		obj = (&f.Steps[index]).Clone()

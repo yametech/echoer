@@ -72,7 +72,9 @@ func (s *Server) Run(addr string) error {
 	//step
 	// POST recv action response state
 	router.POST("/step", s.ackStep)
-	router.DELETE("/step/:name/:uuid",s.stepDelete)
+	router.GET("/step", s.stepList)
+	router.GET("/step/:name", s.stepGet)
+	router.DELETE("/step/:name/:uuid", s.stepDelete)
 
 	if err := router.Run(addr); err != nil {
 		return err

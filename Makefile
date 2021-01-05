@@ -2,7 +2,7 @@ docker-build: api-server flow action cli
 	@echo "Docker build done"
 
 flow:
-	docker build -t harbor.ym/devops/echoer-flow:v0.1.0 -f Dockerfile.flow .
+	docker build -t harbor.ym/devops/echoer-flow:v0.1.1 -f Dockerfile.flow .
 	docker push harbor.ym/devops/echoer-flow:v0.1.0
 
 action:
