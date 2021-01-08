@@ -7,6 +7,7 @@ import (
 	"github.com/yametech/echoer/pkg/core"
 	"github.com/yametech/echoer/pkg/resource"
 	"github.com/yametech/echoer/pkg/storage"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"reflect"
 	"strings"
 )
@@ -28,14 +29,26 @@ func (g *Get) Execute(args ...string) Reply {
 		return &ErrorReply{Message: fmt.Sprintf("this type (%s) is not supported", resType)}
 	}
 
+	stepResourceName := ""
+	resourceName := args[1]
 	result := make(map[string]interface{})
-	if err := g.Get(common.DefaultNamespace, resType, args[1], &result); err != nil {
-		return &ErrorReply{Message: fmt.Sprintf("resource (%s) (%s) not exist or get error (%s)", resType, args[1], err)}
+
+	// Step - flow_run_name.step_name
+	if resType == "step" && strings.Contains(args[1], ".") {
+		resType = "flowrun"
+
+		splits := strings.Split(args[1], ".")
+		resourceName = splits[0]
+		stepResourceName = splits[1]
+	}
+
+	if err := g.Get(common.DefaultNamespace, resType, resourceName, &result); err != nil {
+		return &ErrorReply{Message: fmt.Sprintf("resource (%s) (%s) not exist or get error (%s)", resType, resourceName, err)}
 	}
 
 	switch resType {
 	case string(resource.FlowRunKind):
-		return g.flowRun(result)
+		return g.flowRun(result, stepResourceName)
 	case string(resource.FlowKind):
 		return g.flow(result)
 	case string(resource.StepKind):
@@ -71,15 +84,41 @@ func arrayToStrings(t interface{}) []string {
 	return result
 }
 
-func (g *Get) flowRun(result map[string]interface{}) Reply {
+func (g *Get) stepByFlowRun(result map[string]interface{}, stepResourceName string) map[string]interface{} {
+	steps := get(result, "spec.steps")
+	stepResult := make(map[string]interface{})
+	if pa, Ok := steps.(primitive.A); Ok {
+		stepsA := []interface{}(pa)
+		for _, step := range stepsA {
+			if stepResourceName == get(step.(map[string]interface{}), "metadata.name") {
+				stepResult = step.(map[string]interface{})
+			}
+		}
+	}
+	return stepResult
+}
+
+func (g *Get) flowRun(result map[string]interface{}, stepResourceName string) Reply {
 	format := NewFormat()
-	format.Header("name", "uuid", "history_states", "global_variable")
-	format.Row(
-		fmt.Sprintf("%s", get(result, "metadata.name")),
-		fmt.Sprintf("%s", get(result, "metadata.uuid")),
-		strings.Join(arrayToStrings(get(result, "spec.history_states")), "\n"),
-		fmt.Sprintf("%s", get(result, "spec.global_variable")),
-	)
+	if stepResourceName != "" {
+		result = g.stepByFlowRun(result, stepResourceName)
+		format.Header("name", "flow_run_id", "response_state", "global_variables", "data")
+		format.Row(
+			fmt.Sprintf("%s", get(result, "metadata.name")),
+			fmt.Sprintf("%s", get(result, "spec.flow_id")),
+			fmt.Sprintf("%s", get(result, "spec.response.state")),
+			fmt.Sprintf("%s", get(result, "spec.global_variables")),
+			fmt.Sprintf("%s", get(result, "spec.data")),
+		)
+	} else {
+		format.Header("name", "uuid", "history_states", "global_variable")
+		format.Row(
+			fmt.Sprintf("%s", get(result, "metadata.name")),
+			fmt.Sprintf("%s", get(result, "metadata.uuid")),
+			strings.Join(arrayToStrings(get(result, "spec.history_states")), "\n"),
+			fmt.Sprintf("%s", get(result, "spec.global_variable")),
+		)
+	}
 	return &RawReply{format.Out()}
 }
 
