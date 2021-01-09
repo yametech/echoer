@@ -84,6 +84,25 @@ func arrayToStrings(t interface{}) []string {
 	return result
 }
 
+func mapToStrings(t interface{}) map[string]int {
+	result := make(map[string]int, 0)
+	if t != nil {
+		switch reflect.TypeOf(t).Kind() {
+		case reflect.Map:
+			rv := reflect.ValueOf(t)
+			for _, key := range rv.MapKeys() {
+				v := rv.MapIndex(key)
+				keyString := key.String()
+				switch t := v.Interface().(type) {
+				case int:
+					result[keyString] = t
+				}
+			}
+		}
+	}
+	return result
+}
+
 func (g *Get) stepByFlowRun(result map[string]interface{}, stepResourceName string) map[string]interface{} {
 	steps := get(result, "spec.steps")
 	stepResult := make(map[string]interface{})
@@ -137,8 +156,13 @@ func (g *Get) step(result map[string]interface{}) Reply {
 
 func (g *Get) action(result map[string]interface{}) Reply {
 	format := NewFormat()
-	format.Header("name", "type", "version", "data")
-	format.Row()
+	format.Header("name", "endpoints", "params", "return_states")
+	format.Row(
+		fmt.Sprintf("%s", get(result, "metadata.name")),
+		strings.Replace(strings.TrimRight(strings.TrimLeft(fmt.Sprintf("%s", get(result, "spec.endpoints")), "["), "]"), ",", "\n", -1),
+		fmt.Sprintf("%v", get(result, "spec.params")),
+		strings.Join(arrayToStrings(get(result, "spec.return_states")), "\n"),
+	)
 	return &RawReply{format.Out()}
 }
 
