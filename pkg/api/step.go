@@ -46,7 +46,7 @@ func (h *Handle) stepDelete(g *gin.Context) {
 		RequestParamsError(g, "delete data param is wrong", nil)
 		return
 	}
-	err := h.Delete(common.DefaultNamespace, common.Step, name, uuid)
+	err := h.Delete(common.DefaultNamespace, common.Step, name)
 	if err != nil {
 		InternalError(g, "delete data error or maybe not found", err)
 		return

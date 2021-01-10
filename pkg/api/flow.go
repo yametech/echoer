@@ -72,7 +72,7 @@ func (h *Handle) flowDelete(g *gin.Context) {
 		RequestParamsError(g, "delete data param is wrong", nil)
 		return
 	}
-	err := h.Delete(common.DefaultNamespace, common.FlowCollection, name, uuid)
+	err := h.Delete(common.DefaultNamespace, common.FlowCollection, name)
 	if err != nil {
 		InternalError(g, "get data error or maybe not found", err)
 		return

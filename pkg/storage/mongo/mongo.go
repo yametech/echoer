@@ -312,8 +312,8 @@ func (m *Mongo) Apply(namespace, resource, name string, object core.IObject) (co
 	return old, true, nil
 }
 
-func (m *Mongo) Delete(namespace, resource, name string, uuid string) error {
-	query := bson.M{metadataName: name, metadataUUID: uuid}
+func (m *Mongo) Delete(namespace, resource, name string) error {
+	query := bson.M{metadataName: name}
 	ctx := context.Background()
 	_, err := m.client.Database(namespace).Collection(resource).DeleteOne(ctx, query)
 	if err != nil {

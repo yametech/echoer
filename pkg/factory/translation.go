@@ -39,8 +39,12 @@ CREATE:
 	}
 	fr.GenerateVersion()
 
+	returnSteps := []string {}
+	steps := make(map[string]interface{})
+
 	// check step action if exist
 	for _, step := range stmt.Steps {
+		steps[step.Name] = ""
 		action, err := t.GetAction(step.Action.Name)
 		if err != nil {
 			return fmt.Errorf("not without getting action (%s) definition", step.Action.Name)
@@ -69,8 +73,12 @@ CREATE:
 		}
 
 		returnStateMap := make(map[string]string)
+
 		// check whether the returns are correct
 		for _, _return := range step.Returns {
+			if _return.Next != "done"{
+				returnSteps = append(returnSteps, _return.Next)
+			}
 			if !stringInSlice(_return.State, action.Spec.ReturnStates) {
 				return fmt.Errorf("step (%s) return state (%s) illegal type", step.Name, _return.State)
 			}
@@ -96,6 +104,11 @@ CREATE:
 		fr.Spec.Steps = append(fr.Spec.Steps, flowRunStep)
 	}
 
+	for _, name := range returnSteps {
+		if _, ok := steps[name]; !ok {
+			return fmt.Errorf("not without getting step (%s) definition", name)
+		}
+	}
 	err = t.CreateFlowRun(fr)
 	if err != nil {
 		return err
