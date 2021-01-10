@@ -2,13 +2,13 @@ name: echoer
 on:
   push:
     branches:
-      - master
+      - main
       - release-*
     tags:
       - v*
   pull_request:
     branches:
-      - master
+      - main
       - release-*
 jobs:
   build:
