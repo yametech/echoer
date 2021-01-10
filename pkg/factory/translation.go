@@ -71,6 +71,12 @@ CREATE:
 		returnStateMap := make(map[string]string)
 		// check whether the returns are correct
 		for _, _return := range step.Returns {
+			if _return.Next != "done"{
+				_, err := t.GetAction(_return.Next)
+				if err != nil {
+					return fmt.Errorf("not without getting action (%s) definition", _return.Next)
+				}
+			}
 			if !stringInSlice(_return.State, action.Spec.ReturnStates) {
 				return fmt.Errorf("step (%s) return state (%s) illegal type", step.Name, _return.State)
 			}

@@ -72,7 +72,7 @@ func (h *Handle) actionDelete(g *gin.Context) {
 		RequestParamsError(g, "delete data param is wrong", nil)
 		return
 	}
-	err := h.Delete(common.DefaultNamespace, common.ActionCollection, name, uuid)
+	err := h.Delete(common.DefaultNamespace, common.ActionCollection, name)
 	if err != nil {
 		InternalError(g, "get data error or maybe not found", err)
 		return

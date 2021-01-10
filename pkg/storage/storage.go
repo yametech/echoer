@@ -109,5 +109,5 @@ type IStorage interface {
 	Watch(namespace, resource string, resourceVersion int64, watchChan *WatchChan) error
 	Watch2(namespace, resource string, resourceVersion int64, watch WatchInterface)
 	Apply(namespace, resource, name string, object core.IObject) (core.IObject, bool, error)
-	Delete(namespace, resource, name, uuid string) error
+	Delete(namespace, resource, name string) error
 }

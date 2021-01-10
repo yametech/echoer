@@ -50,5 +50,7 @@ func (h *Help) Help() string {
 	return `
 USAGE:
 	HELP cmd
+	LIST:   list flowrun /
+	DELETE: delete flowrun NAME/
 `
 }

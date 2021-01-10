@@ -16,7 +16,7 @@ func (d *Del) Name() string {
 }
 
 func (d *Del) Execute(args ...string) Reply {
-	if reply := checkArgsExpected(args, 3); reply != nil {
+	if reply := checkArgsExpected(args, 2); reply != nil {
 		return reply
 	}
 	resType := args[0]
@@ -27,7 +27,7 @@ func (d *Del) Execute(args ...string) Reply {
 	if err := d.Get(common.DefaultNamespace, resType, args[1], &result); err != nil {
 		return &ErrorReply{Message: fmt.Sprintf("resource (%s) (%s) not exist or get error (%s)", resType, args[1], err)}
 	}
-	if err := d.Delete(common.DefaultNamespace, resType, args[1], args[2]); err != nil {
+	if err := d.Delete(common.DefaultNamespace, resType, args[1]); err != nil {
 		return &ErrorReply{Message: fmt.Sprintf("delete resource (%s) (%s) error (%s)", resType, args[1], err)}
 	}
 	return &OkReply{Message: []byte("Ok")}
