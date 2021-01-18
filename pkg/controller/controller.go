@@ -40,7 +40,11 @@ type DelayStepAction struct {
 
 func (dsa *DelayStepAction) OnTimer(t <-chan struct{}) {
 	<-t
-	dsa.step.Spec.RetryCount += 1
+	needStop := false
+	// check retry count large then step retryCount value then stop requeue
+	if dsa.step.Spec.RetryCount >= 3 {
+		needStop = true
+	}
 	// check the flow run state
 	// if flow stopped the stop requeue
 	flowRun := &resource.FlowRun{}
@@ -48,13 +52,36 @@ func (dsa *DelayStepAction) OnTimer(t <-chan struct{}) {
 		fmt.Printf("[INFO] retry flow run (%s) step (%s) action execute error (%s)", dsa.step.Spec.FlowID, dsa.step.GetName(), err)
 		return
 	}
+
 	if flowRun.Spec.CurrentState == fsm.STOPPED {
 		return
 	}
+
 	if flowRun.GetUUID() != dsa.step.Spec.FlowRunUUID {
 		fmt.Printf("[INFO] delay step action requeue ignore the (%s.%s.%s)", dsa.step.Spec.FlowID, dsa.step.GetName(), dsa.step.Spec.ActionName)
 		return
 	}
+
+	if needStop {
+		dsa.step.Spec.Done = true
+		_, isUpdate, err := dsa.Apply(common.DefaultNamespace, common.Step, dsa.step.GetName(), dsa.step)
+		if err != nil || !isUpdate {
+			fmt.Printf("[ERROR] force update stop flowrun (%s) step (%s) error (%s)\n", flowRun.GetName(), dsa.step.GetName(), err)
+			return
+		}
+
+		flowRun.Spec.CurrentState = fsm.STOPPED
+		_, isUpdate, err = dsa.Apply(common.DefaultNamespace, common.FlowRunCollection, flowRun.GetName(), flowRun)
+		if err != nil || !isUpdate {
+			fmt.Printf("[ERROR] force update stop flowrun (%s) error (%s)\n", flowRun.GetName(), err)
+		}
+
+		fmt.Printf("[WARN] force update stop flowrun (%s) step (%s) because exceed retry count\n", flowRun.GetName(), dsa.step.GetName())
+
+		return
+	}
+
+	dsa.step.Spec.RetryCount += 1
 	_, isUpdate, err := dsa.Apply(common.DefaultNamespace, common.Step, dsa.step.GetName(), dsa.step)
 	if err != nil || !isUpdate {
 		fmt.Printf("[ERROR] update step error (%s)\n", err)

@@ -99,11 +99,11 @@ func (a *ActionController) realAction(obj *resource.Step) error {
 		return nil
 	}
 	if obj.Spec.Done {
-		fmt.Printf("[INFO] real action reconcile step(%s) flow(%s) done\n", obj.GetName(), obj.Spec.FlowID)
+		fmt.Printf("[INFO] real action reconcile step (%s) flowrun (%s) done\n", obj.GetName(), obj.Spec.FlowID)
 		return nil
 	}
 
-	fmt.Printf("[INFO] real action reconcile step(%s) flow(%s) action (%s) \n", obj.GetName(), obj.Spec.FlowID, obj.Spec.ActionName)
+	fmt.Printf("[INFO] real action reconcile step (%s) flowrun (%s) action (%s) \n", obj.GetName(), obj.Spec.FlowID, obj.Spec.ActionName)
 
 	_action := &resource.Action{}
 	if err := a.Get(common.DefaultNamespace, common.ActionCollection, obj.Spec.ActionName, _action); err != nil {
@@ -134,9 +134,10 @@ func (a *ActionController) realAction(obj *resource.Step) error {
 				Post(_action.Spec.Endpoints).
 				Do()
 
+			retryCount := time.Duration(obj.Spec.RetryCount)
 			if err != nil {
 				fmt.Printf(
-					"[INFO] flow (%s) step (%s) execute action (%s) error: %s\n",
+					"[ERROR] flowrun (%s) step (%s) execute action (%s) error: %s\n",
 					obj.Spec.FlowID,
 					obj.GetName(),
 					obj.Spec.ActionName,
@@ -144,7 +145,7 @@ func (a *ActionController) realAction(obj *resource.Step) error {
 				)
 				a.tq.Schedule(
 					&DelayStepAction{obj, a.IStorage},
-					3*time.Second,
+					retryCount*time.Second,
 				)
 			}
 		}()
