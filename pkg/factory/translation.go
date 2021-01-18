@@ -39,7 +39,7 @@ CREATE:
 	}
 	fr.GenerateVersion()
 
-	returnSteps := []string {}
+	var returnSteps []string
 	steps := make(map[string]interface{})
 
 	// check step action if exist
@@ -76,7 +76,7 @@ CREATE:
 
 		// check whether the returns are correct
 		for _, _return := range step.Returns {
-			if _return.Next != "done"{
+			if _return.Next != "done" {
 				returnSteps = append(returnSteps, _return.Next)
 			}
 			if !stringInSlice(_return.State, action.Spec.ReturnStates) {
