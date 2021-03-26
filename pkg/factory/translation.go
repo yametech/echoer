@@ -170,6 +170,8 @@ CREATE:
 		},
 		Spec: resource.ActionSpec{
 			Params:       make(resource.ActionParams),
+			CaKey: stmt.ActionStatement.Secret["cakey"],
+			CaPEM: stmt.ActionStatement.Secret["capem"],
 			Endpoints:    make([]string, 0),
 			ReturnStates: make([]string, 0),
 		},
@@ -181,6 +183,8 @@ CREATE:
 	for _, _return := range stmt.ActionStatement.Returns {
 		action.Spec.ReturnStates = append(action.Spec.ReturnStates, _return.State)
 	}
+
+	action.Spec.ServeType = resource.ServeType(stmt.ActionStatement.Type)
 
 	for _, _arg := range stmt.ActionStatement.Args {
 		switch _arg.ParamType {

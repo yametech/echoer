@@ -18,6 +18,7 @@ type ServeType uint8
 const (
 	HTTP ServeType = iota
 	GRPC
+	HTTPS
 )
 
 type ParamType uint8
@@ -68,6 +69,9 @@ type ActionSpec struct {
 	ServeType `json:"serve_type" bson:"serve_type"`
 	// Endpoints load balance client
 	Endpoints []string `json:"endpoints" bson:"endpoints"`
+	// if type is https CAPEM and CAKEY
+	CaKey string `json:"ca_key" bson:"ca_key"`
+	CaPEM string `json:"ca_pem" bson:"ca_pem"`
 	// Params user define server params
 	Params ActionParams `json:"params" bson:"params"`
 	// ReturnStates the action will return the following expected state to the process flow-controller

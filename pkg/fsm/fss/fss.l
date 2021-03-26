@@ -24,9 +24,12 @@
 "ADDR"                               { return ADDR; }
 "METHOD"                             { return METHOD; }
 "HTTP"                               { return HTTP; }
+"HTTPS"                              { return HTTPS; }
 "GRPC"                               { return GRPC; }
 "INT"                                { return INT; }
 "STR"                                { return STR; }
+"SECRET"                             { return SECRET; }
+"CAPEM"                              { return CAPEM; }
 
 "->"   { return DEST; }
 "("    { return LPAREN; }

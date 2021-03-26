@@ -124,12 +124,37 @@ func (a *ActionController) realAction(obj *resource.Step) error {
 	obj.Spec.ActionParams[common.AckStates] = _action.Spec.ReturnStates
 	obj.Spec.ActionParams[common.UUID] = obj.UUID
 	obj.Spec.ActionParams[common.GlobalVariables] = _flowRun.Spec.GlobalVariables
+	obj.Spec.ActionParams[common.CaKey] = _action.Spec.CaKey
+	obj.Spec.ActionParams[common.CaPEM] = _action.Spec.CaPEM
 
 	switch _action.Spec.ServeType {
 	case resource.HTTP:
 		go func() {
 			err := action.NewHookClient().
 				HttpInterface().
+				Params(obj.Spec.ActionParams).
+				Post(_action.Spec.Endpoints).
+				Do()
+
+			retryCount := time.Duration(obj.Spec.RetryCount)
+			if err != nil {
+				fmt.Printf(
+					"[ERROR] flowrun (%s) step (%s) execute action (%s) error: %s\n",
+					obj.Spec.FlowID,
+					obj.GetName(),
+					obj.Spec.ActionName,
+					err,
+				)
+				a.tq.Schedule(
+					&DelayStepAction{obj, a.IStorage},
+					retryCount*time.Second,
+				)
+			}
+		}()
+	case resource.HTTPS:
+		go func() {
+			err := action.NewHookClient().
+				HttpsInterface().
 				Params(obj.Spec.ActionParams).
 				Post(_action.Spec.Endpoints).
 				Do()

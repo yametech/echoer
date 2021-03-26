@@ -22,19 +22,19 @@ state 1
 state 2
 	program:  flow_run_stmt.    (1)
 
-	.  reduce 1 (src line 64)
+	.  reduce 1 (src line 68)
 
 
 state 3
 	program:  action_stmt.    (2)
 
-	.  reduce 2 (src line 68)
+	.  reduce 2 (src line 72)
 
 
 state 4
 	program:  flow_stmt.    (3)
 
-	.  reduce 3 (src line 72)
+	.  reduce 3 (src line 76)
 
 
 state 5
@@ -49,6 +49,8 @@ state 5
 state 6
 	action_stmt:  ACTION.STRING_VALUE action_content_addr_stmt action_content_method_stmt action_content_args_stmt action_return_stmt ACTION_END 
 	action_stmt:  ACTION.IDENTIFIER action_content_addr_stmt action_content_method_stmt action_content_args_stmt action_return_stmt ACTION_END 
+	action_stmt:  ACTION.STRING_VALUE action_content_addr_stmt action_content_method_stmt action_content_secret_stmt action_content_args_stmt action_return_stmt ACTION_END 
+	action_stmt:  ACTION.IDENTIFIER action_content_addr_stmt action_content_method_stmt action_content_secret_stmt action_content_args_stmt action_return_stmt ACTION_END 
 
 	IDENTIFIER  shift 11
 	STRING_VALUE  shift 10
@@ -66,51 +68,53 @@ state 7
 
 state 8
 	flow_run_stmt:  FLOW_RUN STRING_VALUE.flow_step_stmts FLOW_RUN_END 
-	flow_step_stmts: .    (26)
+	flow_step_stmts: .    (33)
 
-	.  reduce 26 (src line 164)
+	.  reduce 33 (src line 212)
 
 	flow_step_stmts  goto 14
 
 state 9
 	flow_run_stmt:  FLOW_RUN IDENTIFIER.flow_step_stmts FLOW_RUN_END 
-	flow_step_stmts: .    (26)
+	flow_step_stmts: .    (33)
 
-	.  reduce 26 (src line 164)
+	.  reduce 33 (src line 212)
 
 	flow_step_stmts  goto 15
 
 state 10
 	action_stmt:  ACTION STRING_VALUE.action_content_addr_stmt action_content_method_stmt action_content_args_stmt action_return_stmt ACTION_END 
-	action_content_addr_stmt: .    (6)
+	action_stmt:  ACTION STRING_VALUE.action_content_addr_stmt action_content_method_stmt action_content_secret_stmt action_content_args_stmt action_return_stmt ACTION_END 
+	action_content_addr_stmt: .    (8)
 
 	ADDR  shift 17
-	.  reduce 6 (src line 102)
+	.  reduce 8 (src line 130)
 
 	action_content_addr_stmt  goto 16
 
 state 11
 	action_stmt:  ACTION IDENTIFIER.action_content_addr_stmt action_content_method_stmt action_content_args_stmt action_return_stmt ACTION_END 
-	action_content_addr_stmt: .    (6)
+	action_stmt:  ACTION IDENTIFIER.action_content_addr_stmt action_content_method_stmt action_content_secret_stmt action_content_args_stmt action_return_stmt ACTION_END 
+	action_content_addr_stmt: .    (8)
 
 	ADDR  shift 17
-	.  reduce 6 (src line 102)
+	.  reduce 8 (src line 130)
 
 	action_content_addr_stmt  goto 18
 
 state 12
 	flow_stmt:  FLOW STRING_VALUE.flow_step_stmts FLOW_END 
-	flow_step_stmts: .    (26)
+	flow_step_stmts: .    (33)
 
-	.  reduce 26 (src line 164)
+	.  reduce 33 (src line 212)
 
 	flow_step_stmts  goto 19
 
 state 13
 	flow_stmt:  FLOW IDENTIFIER.flow_step_stmts FLOW_END 
-	flow_step_stmts: .    (26)
+	flow_step_stmts: .    (33)
 
-	.  reduce 26 (src line 164)
+	.  reduce 33 (src line 212)
 
 	flow_step_stmts  goto 20
 
@@ -138,10 +142,11 @@ state 15
 
 state 16
 	action_stmt:  ACTION STRING_VALUE action_content_addr_stmt.action_content_method_stmt action_content_args_stmt action_return_stmt ACTION_END 
-	action_content_method_stmt: .    (8)
+	action_stmt:  ACTION STRING_VALUE action_content_addr_stmt.action_content_method_stmt action_content_secret_stmt action_content_args_stmt action_return_stmt ACTION_END 
+	action_content_method_stmt: .    (10)
 
 	METHOD  shift 27
-	.  reduce 8 (src line 106)
+	.  reduce 10 (src line 134)
 
 	action_content_method_stmt  goto 26
 
@@ -154,10 +159,11 @@ state 17
 
 state 18
 	action_stmt:  ACTION IDENTIFIER action_content_addr_stmt.action_content_method_stmt action_content_args_stmt action_return_stmt ACTION_END 
-	action_content_method_stmt: .    (8)
+	action_stmt:  ACTION IDENTIFIER action_content_addr_stmt.action_content_method_stmt action_content_secret_stmt action_content_args_stmt action_return_stmt ACTION_END 
+	action_content_method_stmt: .    (10)
 
 	METHOD  shift 27
-	.  reduce 8 (src line 106)
+	.  reduce 10 (src line 134)
 
 	action_content_method_stmt  goto 29
 
@@ -184,15 +190,15 @@ state 20
 	flow_step_stmt  goto 22
 
 state 21
-	flow_run_stmt:  FLOW_RUN STRING_VALUE flow_step_stmts FLOW_RUN_END.    (24)
+	flow_run_stmt:  FLOW_RUN STRING_VALUE flow_step_stmts FLOW_RUN_END.    (31)
 
-	.  reduce 24 (src line 151)
+	.  reduce 31 (src line 199)
 
 
 state 22
-	flow_step_stmts:  flow_step_stmts flow_step_stmt.    (27)
+	flow_step_stmts:  flow_step_stmts flow_step_stmt.    (34)
 
-	.  reduce 27 (src line 165)
+	.  reduce 34 (src line 213)
 
 
 state 23
@@ -214,723 +220,885 @@ state 24
 
 
 state 25
-	flow_run_stmt:  FLOW_RUN IDENTIFIER flow_step_stmts FLOW_RUN_END.    (25)
+	flow_run_stmt:  FLOW_RUN IDENTIFIER flow_step_stmts FLOW_RUN_END.    (32)
 
-	.  reduce 25 (src line 157)
+	.  reduce 32 (src line 205)
 
 
 state 26
 	action_stmt:  ACTION STRING_VALUE action_content_addr_stmt action_content_method_stmt.action_content_args_stmt action_return_stmt ACTION_END 
-	action_content_args_stmt: .    (11)
+	action_stmt:  ACTION STRING_VALUE action_content_addr_stmt action_content_method_stmt.action_content_secret_stmt action_content_args_stmt action_return_stmt ACTION_END 
+	action_content_args_stmt: .    (18)
 
-	ARGS  shift 37
-	.  reduce 11 (src line 111)
+	ARGS  shift 38
+	SECRET  shift 39
+	.  reduce 18 (src line 159)
 
 	action_content_args_stmt  goto 36
+	action_content_secret_stmt  goto 37
 
 state 27
 	action_content_method_stmt:  METHOD.ASSIGN HTTP SEMICOLON 
 	action_content_method_stmt:  METHOD.ASSIGN GRPC SEMICOLON 
+	action_content_method_stmt:  METHOD.ASSIGN HTTPS SEMICOLON 
 
-	ASSIGN  shift 38
+	ASSIGN  shift 40
 	.  error
 
 
 state 28
 	action_content_addr_stmt:  ADDR ASSIGN.STRING_VALUE SEMICOLON 
 
-	STRING_VALUE  shift 39
+	STRING_VALUE  shift 41
 	.  error
 
 
 state 29
 	action_stmt:  ACTION IDENTIFIER action_content_addr_stmt action_content_method_stmt.action_content_args_stmt action_return_stmt ACTION_END 
-	action_content_args_stmt: .    (11)
+	action_stmt:  ACTION IDENTIFIER action_content_addr_stmt action_content_method_stmt.action_content_secret_stmt action_content_args_stmt action_return_stmt ACTION_END 
+	action_content_args_stmt: .    (18)
 
-	ARGS  shift 37
-	.  reduce 11 (src line 111)
+	ARGS  shift 38
+	SECRET  shift 39
+	.  reduce 18 (src line 159)
 
-	action_content_args_stmt  goto 40
+	action_content_args_stmt  goto 42
+	action_content_secret_stmt  goto 43
 
 state 30
-	flow_stmt:  FLOW STRING_VALUE flow_step_stmts FLOW_END.    (22)
+	flow_stmt:  FLOW STRING_VALUE flow_step_stmts FLOW_END.    (29)
 
-	.  reduce 22 (src line 139)
+	.  reduce 29 (src line 187)
 
 
 state 31
-	flow_stmt:  FLOW IDENTIFIER flow_step_stmts FLOW_END.    (23)
+	flow_stmt:  FLOW IDENTIFIER flow_step_stmts FLOW_END.    (30)
 
-	.  reduce 23 (src line 145)
+	.  reduce 30 (src line 193)
 
 
 state 32
 	flow_step_stmt:  STEP IDENTIFIER.TO return_stmt flow_action_stmt SEMICOLON 
 
-	TO  shift 41
+	TO  shift 44
 	.  error
 
 
 state 33
 	flow_step_stmt:  STEP STRING_VALUE.TO return_stmt flow_action_stmt SEMICOLON 
 
-	TO  shift 42
+	TO  shift 45
 	.  error
 
 
 state 34
 	flow_step_stmt:  DECI IDENTIFIER.TO return_stmt flow_action_stmt SEMICOLON 
 
-	TO  shift 43
+	TO  shift 46
 	.  error
 
 
 state 35
 	flow_step_stmt:  DECI STRING_VALUE.TO return_stmt flow_action_stmt SEMICOLON 
 
-	TO  shift 44
+	TO  shift 47
 	.  error
 
 
 state 36
 	action_stmt:  ACTION STRING_VALUE action_content_addr_stmt action_content_method_stmt action_content_args_stmt.action_return_stmt ACTION_END 
 
-	RETURN  shift 46
+	RETURN  shift 49
 	.  error
 
-	action_return_stmt  goto 45
+	action_return_stmt  goto 48
 
 state 37
-	action_content_args_stmt:  ARGS.ASSIGN action_args_stmt SEMICOLON 
+	action_stmt:  ACTION STRING_VALUE action_content_addr_stmt action_content_method_stmt action_content_secret_stmt.action_content_args_stmt action_return_stmt ACTION_END 
+	action_content_args_stmt: .    (18)
 
-	ASSIGN  shift 47
-	.  error
+	ARGS  shift 38
+	.  reduce 18 (src line 159)
 
+	action_content_args_stmt  goto 50
 
 state 38
-	action_content_method_stmt:  METHOD ASSIGN.HTTP SEMICOLON 
-	action_content_method_stmt:  METHOD ASSIGN.GRPC SEMICOLON 
+	action_content_args_stmt:  ARGS.ASSIGN action_args_stmt SEMICOLON 
 
-	HTTP  shift 48
-	GRPC  shift 49
+	ASSIGN  shift 51
 	.  error
 
 
 state 39
-	action_content_addr_stmt:  ADDR ASSIGN STRING_VALUE.SEMICOLON 
+	action_content_secret_stmt:  SECRET.ASSIGN action_content_secret_args_stmt SEMICOLON 
 
-	SEMICOLON  shift 50
+	ASSIGN  shift 52
 	.  error
 
 
 state 40
-	action_stmt:  ACTION IDENTIFIER action_content_addr_stmt action_content_method_stmt action_content_args_stmt.action_return_stmt ACTION_END 
+	action_content_method_stmt:  METHOD ASSIGN.HTTP SEMICOLON 
+	action_content_method_stmt:  METHOD ASSIGN.GRPC SEMICOLON 
+	action_content_method_stmt:  METHOD ASSIGN.HTTPS SEMICOLON 
 
-	RETURN  shift 46
+	HTTPS  shift 55
+	HTTP  shift 53
+	GRPC  shift 54
 	.  error
 
-	action_return_stmt  goto 51
 
 state 41
-	flow_step_stmt:  STEP IDENTIFIER TO.return_stmt flow_action_stmt SEMICOLON 
+	action_content_addr_stmt:  ADDR ASSIGN STRING_VALUE.SEMICOLON 
 
-	LPAREN  shift 53
+	SEMICOLON  shift 56
 	.  error
 
-	return_stmt  goto 52
 
 state 42
-	flow_step_stmt:  STEP STRING_VALUE TO.return_stmt flow_action_stmt SEMICOLON 
+	action_stmt:  ACTION IDENTIFIER action_content_addr_stmt action_content_method_stmt action_content_args_stmt.action_return_stmt ACTION_END 
 
-	LPAREN  shift 53
+	RETURN  shift 49
 	.  error
 
-	return_stmt  goto 54
+	action_return_stmt  goto 57
 
 state 43
-	flow_step_stmt:  DECI IDENTIFIER TO.return_stmt flow_action_stmt SEMICOLON 
+	action_stmt:  ACTION IDENTIFIER action_content_addr_stmt action_content_method_stmt action_content_secret_stmt.action_content_args_stmt action_return_stmt ACTION_END 
+	action_content_args_stmt: .    (18)
 
-	LPAREN  shift 53
-	.  error
+	ARGS  shift 38
+	.  reduce 18 (src line 159)
 
-	return_stmt  goto 55
+	action_content_args_stmt  goto 58
 
 state 44
-	flow_step_stmt:  DECI STRING_VALUE TO.return_stmt flow_action_stmt SEMICOLON 
-
-	LPAREN  shift 53
-	.  error
-
-	return_stmt  goto 56
-
-state 45
-	action_stmt:  ACTION STRING_VALUE action_content_addr_stmt action_content_method_stmt action_content_args_stmt action_return_stmt.ACTION_END 
-
-	ACTION_END  shift 57
-	.  error
-
-
-state 46
-	action_return_stmt:  RETURN.ASSIGN return_stmt SEMICOLON 
-
-	ASSIGN  shift 58
-	.  error
-
-
-state 47
-	action_content_args_stmt:  ARGS ASSIGN.action_args_stmt SEMICOLON 
+	flow_step_stmt:  STEP IDENTIFIER TO.return_stmt flow_action_stmt SEMICOLON 
 
 	LPAREN  shift 60
 	.  error
 
-	action_args_stmt  goto 59
+	return_stmt  goto 59
+
+state 45
+	flow_step_stmt:  STEP STRING_VALUE TO.return_stmt flow_action_stmt SEMICOLON 
+
+	LPAREN  shift 60
+	.  error
+
+	return_stmt  goto 61
+
+state 46
+	flow_step_stmt:  DECI IDENTIFIER TO.return_stmt flow_action_stmt SEMICOLON 
+
+	LPAREN  shift 60
+	.  error
+
+	return_stmt  goto 62
+
+state 47
+	flow_step_stmt:  DECI STRING_VALUE TO.return_stmt flow_action_stmt SEMICOLON 
+
+	LPAREN  shift 60
+	.  error
+
+	return_stmt  goto 63
 
 state 48
-	action_content_method_stmt:  METHOD ASSIGN HTTP.SEMICOLON 
+	action_stmt:  ACTION STRING_VALUE action_content_addr_stmt action_content_method_stmt action_content_args_stmt action_return_stmt.ACTION_END 
 
-	SEMICOLON  shift 61
+	ACTION_END  shift 64
 	.  error
 
 
 state 49
-	action_content_method_stmt:  METHOD ASSIGN GRPC.SEMICOLON 
+	action_return_stmt:  RETURN.ASSIGN return_stmt SEMICOLON 
 
-	SEMICOLON  shift 62
+	ASSIGN  shift 65
 	.  error
 
 
 state 50
-	action_content_addr_stmt:  ADDR ASSIGN STRING_VALUE SEMICOLON.    (7)
+	action_stmt:  ACTION STRING_VALUE action_content_addr_stmt action_content_method_stmt action_content_secret_stmt action_content_args_stmt.action_return_stmt ACTION_END 
 
-	.  reduce 7 (src line 103)
+	RETURN  shift 49
+	.  error
 
+	action_return_stmt  goto 66
 
 state 51
-	action_stmt:  ACTION IDENTIFIER action_content_addr_stmt action_content_method_stmt action_content_args_stmt action_return_stmt.ACTION_END 
+	action_content_args_stmt:  ARGS ASSIGN.action_args_stmt SEMICOLON 
 
-	ACTION_END  shift 63
+	LPAREN  shift 68
 	.  error
 
+	action_args_stmt  goto 67
 
 state 52
-	flow_step_stmt:  STEP IDENTIFIER TO return_stmt.flow_action_stmt SEMICOLON 
+	action_content_secret_stmt:  SECRET ASSIGN.action_content_secret_args_stmt SEMICOLON 
+	action_content_secret_args_stmt: .    (15)
 
-	LCURLY  shift 65
-	.  error
+	LPAREN  shift 70
+	.  reduce 15 (src line 147)
 
-	flow_action_stmt  goto 64
+	action_content_secret_args_stmt  goto 69
 
 state 53
-	return_stmt:  LPAREN.return_content_stmts RPAREN 
-	return_stmt:  LPAREN.RPAREN 
+	action_content_method_stmt:  METHOD ASSIGN HTTP.SEMICOLON 
 
-	IDENTIFIER  shift 69
-	RPAREN  shift 67
+	SEMICOLON  shift 71
 	.  error
 
-	return_content_stmts  goto 66
-	return_content_stmt  goto 68
 
 state 54
-	flow_step_stmt:  STEP STRING_VALUE TO return_stmt.flow_action_stmt SEMICOLON 
+	action_content_method_stmt:  METHOD ASSIGN GRPC.SEMICOLON 
 
-	LCURLY  shift 65
+	SEMICOLON  shift 72
 	.  error
 
-	flow_action_stmt  goto 70
 
 state 55
-	flow_step_stmt:  DECI IDENTIFIER TO return_stmt.flow_action_stmt SEMICOLON 
+	action_content_method_stmt:  METHOD ASSIGN HTTPS.SEMICOLON 
 
-	LCURLY  shift 65
+	SEMICOLON  shift 73
 	.  error
 
-	flow_action_stmt  goto 71
 
 state 56
-	flow_step_stmt:  DECI STRING_VALUE TO return_stmt.flow_action_stmt SEMICOLON 
+	action_content_addr_stmt:  ADDR ASSIGN STRING_VALUE SEMICOLON.    (9)
 
-	LCURLY  shift 65
-	.  error
+	.  reduce 9 (src line 131)
 
-	flow_action_stmt  goto 72
 
 state 57
-	action_stmt:  ACTION STRING_VALUE action_content_addr_stmt action_content_method_stmt action_content_args_stmt action_return_stmt ACTION_END.    (4)
+	action_stmt:  ACTION IDENTIFIER action_content_addr_stmt action_content_method_stmt action_content_args_stmt action_return_stmt.ACTION_END 
 
-	.  reduce 4 (src line 78)
+	ACTION_END  shift 74
+	.  error
 
 
 state 58
-	action_return_stmt:  RETURN ASSIGN.return_stmt SEMICOLON 
+	action_stmt:  ACTION IDENTIFIER action_content_addr_stmt action_content_method_stmt action_content_secret_stmt action_content_args_stmt.action_return_stmt ACTION_END 
 
-	LPAREN  shift 53
+	RETURN  shift 49
 	.  error
 
-	return_stmt  goto 73
+	action_return_stmt  goto 75
 
 state 59
-	action_content_args_stmt:  ARGS ASSIGN action_args_stmt.SEMICOLON 
+	flow_step_stmt:  STEP IDENTIFIER TO return_stmt.flow_action_stmt SEMICOLON 
 
-	SEMICOLON  shift 74
+	LCURLY  shift 77
 	.  error
 
+	flow_action_stmt  goto 76
 
 state 60
-	action_args_stmt:  LPAREN.action_args_content_stmts RPAREN 
-	action_args_content_stmts: .    (14)
+	return_stmt:  LPAREN.return_content_stmts RPAREN 
+	return_stmt:  LPAREN.RPAREN 
 
-	.  reduce 14 (src line 120)
+	IDENTIFIER  shift 81
+	RPAREN  shift 79
+	.  error
 
-	action_args_content_stmts  goto 75
+	return_content_stmts  goto 78
+	return_content_stmt  goto 80
 
 state 61
-	action_content_method_stmt:  METHOD ASSIGN HTTP SEMICOLON.    (9)
+	flow_step_stmt:  STEP STRING_VALUE TO return_stmt.flow_action_stmt SEMICOLON 
 
-	.  reduce 9 (src line 107)
+	LCURLY  shift 77
+	.  error
 
+	flow_action_stmt  goto 82
 
 state 62
-	action_content_method_stmt:  METHOD ASSIGN GRPC SEMICOLON.    (10)
+	flow_step_stmt:  DECI IDENTIFIER TO return_stmt.flow_action_stmt SEMICOLON 
 
-	.  reduce 10 (src line 108)
+	LCURLY  shift 77
+	.  error
 
+	flow_action_stmt  goto 83
 
 state 63
-	action_stmt:  ACTION IDENTIFIER action_content_addr_stmt action_content_method_stmt action_content_args_stmt action_return_stmt ACTION_END.    (5)
+	flow_step_stmt:  DECI STRING_VALUE TO return_stmt.flow_action_stmt SEMICOLON 
 
-	.  reduce 5 (src line 89)
+	LCURLY  shift 77
+	.  error
 
+	flow_action_stmt  goto 84
 
 state 64
-	flow_step_stmt:  STEP IDENTIFIER TO return_stmt flow_action_stmt.SEMICOLON 
+	action_stmt:  ACTION STRING_VALUE action_content_addr_stmt action_content_method_stmt action_content_args_stmt action_return_stmt ACTION_END.    (4)
 
-	SEMICOLON  shift 76
-	.  error
+	.  reduce 4 (src line 82)
 
 
 state 65
-	flow_action_stmt:  LCURLY.flow_action_content_stmt RCURLY 
+	action_return_stmt:  RETURN ASSIGN.return_stmt SEMICOLON 
 
-	ACTION  shift 78
+	LPAREN  shift 60
 	.  error
 
-	flow_action_content_stmt  goto 77
+	return_stmt  goto 85
 
 state 66
-	return_stmt:  LPAREN return_content_stmts.RPAREN 
-	return_content_stmts:  return_content_stmts.OR return_content_stmt 
+	action_stmt:  ACTION STRING_VALUE action_content_addr_stmt action_content_method_stmt action_content_secret_stmt action_content_args_stmt action_return_stmt.ACTION_END 
 
-	RPAREN  shift 79
-	OR  shift 80
+	ACTION_END  shift 86
 	.  error
 
 
 state 67
-	return_stmt:  LPAREN RPAREN.    (44)
+	action_content_args_stmt:  ARGS ASSIGN action_args_stmt.SEMICOLON 
 
-	.  reduce 44 (src line 235)
+	SEMICOLON  shift 87
+	.  error
 
 
 state 68
-	return_content_stmts:  return_content_stmt.    (45)
+	action_args_stmt:  LPAREN.action_args_content_stmts RPAREN 
+	action_args_content_stmts: .    (21)
 
-	.  reduce 45 (src line 238)
+	.  reduce 21 (src line 168)
 
+	action_args_content_stmts  goto 88
 
 state 69
-	return_content_stmt:  IDENTIFIER.DEST IDENTIFIER 
-	return_content_stmt:  IDENTIFIER.    (48)
+	action_content_secret_stmt:  SECRET ASSIGN action_content_secret_args_stmt.SEMICOLON 
 
-	DEST  shift 81
-	.  reduce 48 (src line 253)
+	SEMICOLON  shift 89
+	.  error
 
 
 state 70
-	flow_step_stmt:  STEP STRING_VALUE TO return_stmt flow_action_stmt.SEMICOLON 
+	action_content_secret_args_stmt:  LPAREN.CAPEM ASSIGN STRING_VALUE RPAREN 
+	action_content_secret_args_stmt:  LPAREN.CAPEM ASSIGN IDENTIFIER RPAREN 
 
-	SEMICOLON  shift 82
+	CAPEM  shift 90
 	.  error
 
 
 state 71
-	flow_step_stmt:  DECI IDENTIFIER TO return_stmt flow_action_stmt.SEMICOLON 
+	action_content_method_stmt:  METHOD ASSIGN HTTP SEMICOLON.    (11)
 
-	SEMICOLON  shift 83
-	.  error
+	.  reduce 11 (src line 135)
 
 
 state 72
-	flow_step_stmt:  DECI STRING_VALUE TO return_stmt flow_action_stmt.SEMICOLON 
+	action_content_method_stmt:  METHOD ASSIGN GRPC SEMICOLON.    (12)
 
-	SEMICOLON  shift 84
-	.  error
+	.  reduce 12 (src line 136)
 
 
 state 73
-	action_return_stmt:  RETURN ASSIGN return_stmt.SEMICOLON 
+	action_content_method_stmt:  METHOD ASSIGN HTTPS SEMICOLON.    (13)
 
-	SEMICOLON  shift 85
-	.  error
+	.  reduce 13 (src line 137)
 
 
 state 74
-	action_content_args_stmt:  ARGS ASSIGN action_args_stmt SEMICOLON.    (12)
+	action_stmt:  ACTION IDENTIFIER action_content_addr_stmt action_content_method_stmt action_content_args_stmt action_return_stmt ACTION_END.    (5)
 
-	.  reduce 12 (src line 112)
+	.  reduce 5 (src line 93)
 
 
 state 75
-	action_args_stmt:  LPAREN action_args_content_stmts.RPAREN 
-	action_args_content_stmts:  action_args_content_stmts.action_args_content_stmt 
+	action_stmt:  ACTION IDENTIFIER action_content_addr_stmt action_content_method_stmt action_content_secret_stmt action_content_args_stmt action_return_stmt.ACTION_END 
 
-	RPAREN  shift 86
-	COMMA  shift 88
-	INT  shift 89
-	STR  shift 90
+	ACTION_END  shift 91
 	.  error
 
-	action_args_content_stmt  goto 87
 
 state 76
-	flow_step_stmt:  STEP IDENTIFIER TO return_stmt flow_action_stmt SEMICOLON.    (28)
+	flow_step_stmt:  STEP IDENTIFIER TO return_stmt flow_action_stmt.SEMICOLON 
 
-	.  reduce 28 (src line 171)
+	SEMICOLON  shift 92
+	.  error
 
 
 state 77
-	flow_action_stmt:  LCURLY flow_action_content_stmt.RCURLY 
+	flow_action_stmt:  LCURLY.flow_action_content_stmt RCURLY 
 
-	RCURLY  shift 91
+	ACTION  shift 94
 	.  error
 
+	flow_action_content_stmt  goto 93
 
 state 78
-	flow_action_content_stmt:  ACTION.ASSIGN STRING_VALUE SEMICOLON ARGS ASSIGN flow_args_stmt SEMICOLON 
-	flow_action_content_stmt:  ACTION.ASSIGN IDENTIFIER SEMICOLON ARGS ASSIGN flow_args_stmt SEMICOLON 
-	flow_action_content_stmt:  ACTION.ASSIGN STRING_VALUE SEMICOLON 
-	flow_action_content_stmt:  ACTION.ASSIGN IDENTIFIER SEMICOLON 
+	return_stmt:  LPAREN return_content_stmts.RPAREN 
+	return_content_stmts:  return_content_stmts.OR return_content_stmt 
 
-	ASSIGN  shift 92
+	RPAREN  shift 95
+	OR  shift 96
 	.  error
 
 
 state 79
-	return_stmt:  LPAREN return_content_stmts RPAREN.    (43)
+	return_stmt:  LPAREN RPAREN.    (51)
 
-	.  reduce 43 (src line 233)
+	.  reduce 51 (src line 283)
 
 
 state 80
-	return_content_stmts:  return_content_stmts OR.return_content_stmt 
+	return_content_stmts:  return_content_stmt.    (52)
 
-	IDENTIFIER  shift 69
-	.  error
+	.  reduce 52 (src line 286)
 
-	return_content_stmt  goto 93
 
 state 81
-	return_content_stmt:  IDENTIFIER DEST.IDENTIFIER 
+	return_content_stmt:  IDENTIFIER.DEST IDENTIFIER 
+	return_content_stmt:  IDENTIFIER.    (55)
 
-	IDENTIFIER  shift 94
-	.  error
+	DEST  shift 97
+	.  reduce 55 (src line 301)
 
 
 state 82
-	flow_step_stmt:  STEP STRING_VALUE TO return_stmt flow_action_stmt SEMICOLON.    (30)
+	flow_step_stmt:  STEP STRING_VALUE TO return_stmt flow_action_stmt.SEMICOLON 
 
-	.  reduce 30 (src line 180)
+	SEMICOLON  shift 98
+	.  error
 
 
 state 83
-	flow_step_stmt:  DECI IDENTIFIER TO return_stmt flow_action_stmt SEMICOLON.    (29)
+	flow_step_stmt:  DECI IDENTIFIER TO return_stmt flow_action_stmt.SEMICOLON 
 
-	.  reduce 29 (src line 176)
+	SEMICOLON  shift 99
+	.  error
 
 
 state 84
-	flow_step_stmt:  DECI STRING_VALUE TO return_stmt flow_action_stmt SEMICOLON.    (31)
+	flow_step_stmt:  DECI STRING_VALUE TO return_stmt flow_action_stmt.SEMICOLON 
 
-	.  reduce 31 (src line 184)
+	SEMICOLON  shift 100
+	.  error
 
 
 state 85
-	action_return_stmt:  RETURN ASSIGN return_stmt SEMICOLON.    (21)
+	action_return_stmt:  RETURN ASSIGN return_stmt.SEMICOLON 
 
-	.  reduce 21 (src line 132)
+	SEMICOLON  shift 101
+	.  error
 
 
 state 86
-	action_args_stmt:  LPAREN action_args_content_stmts RPAREN.    (13)
+	action_stmt:  ACTION STRING_VALUE action_content_addr_stmt action_content_method_stmt action_content_secret_stmt action_content_args_stmt action_return_stmt ACTION_END.    (6)
 
-	.  reduce 13 (src line 116)
+	.  reduce 6 (src line 104)
 
 
 state 87
-	action_args_content_stmts:  action_args_content_stmts action_args_content_stmt.    (15)
+	action_content_args_stmt:  ARGS ASSIGN action_args_stmt SEMICOLON.    (19)
 
-	.  reduce 15 (src line 121)
+	.  reduce 19 (src line 160)
 
 
 state 88
-	action_args_content_stmt:  COMMA.action_args_content_stmt 
+	action_args_stmt:  LPAREN action_args_content_stmts.RPAREN 
+	action_args_content_stmts:  action_args_content_stmts.action_args_content_stmt 
 
-	COMMA  shift 88
-	INT  shift 89
-	STR  shift 90
+	RPAREN  shift 102
+	COMMA  shift 104
+	INT  shift 105
+	STR  shift 106
 	.  error
 
-	action_args_content_stmt  goto 95
+	action_args_content_stmt  goto 103
 
 state 89
-	action_args_content_stmt:  INT.STRING_VALUE 
-	action_args_content_stmt:  INT.IDENTIFIER 
+	action_content_secret_stmt:  SECRET ASSIGN action_content_secret_args_stmt SEMICOLON.    (14)
 
-	IDENTIFIER  shift 97
-	STRING_VALUE  shift 96
-	.  error
+	.  reduce 14 (src line 140)
 
 
 state 90
-	action_args_content_stmt:  STR.STRING_VALUE 
-	action_args_content_stmt:  STR.IDENTIFIER 
-
-	IDENTIFIER  shift 99
-	STRING_VALUE  shift 98
-	.  error
-
-
-state 91
-	flow_action_stmt:  LCURLY flow_action_content_stmt RCURLY.    (32)
-
-	.  reduce 32 (src line 190)
-
-
-state 92
-	flow_action_content_stmt:  ACTION ASSIGN.STRING_VALUE SEMICOLON ARGS ASSIGN flow_args_stmt SEMICOLON 
-	flow_action_content_stmt:  ACTION ASSIGN.IDENTIFIER SEMICOLON ARGS ASSIGN flow_args_stmt SEMICOLON 
-	flow_action_content_stmt:  ACTION ASSIGN.STRING_VALUE SEMICOLON 
-	flow_action_content_stmt:  ACTION ASSIGN.IDENTIFIER SEMICOLON 
-
-	IDENTIFIER  shift 101
-	STRING_VALUE  shift 100
-	.  error
-
-
-state 93
-	return_content_stmts:  return_content_stmts OR return_content_stmt.    (46)
-
-	.  reduce 46 (src line 243)
-
-
-state 94
-	return_content_stmt:  IDENTIFIER DEST IDENTIFIER.    (47)
-
-	.  reduce 47 (src line 249)
-
-
-state 95
-	action_args_content_stmt:  COMMA action_args_content_stmt.    (16)
-
-	.  reduce 16 (src line 124)
-
-
-state 96
-	action_args_content_stmt:  INT STRING_VALUE.    (17)
-
-	.  reduce 17 (src line 126)
-
-
-state 97
-	action_args_content_stmt:  INT IDENTIFIER.    (19)
-
-	.  reduce 19 (src line 128)
-
-
-state 98
-	action_args_content_stmt:  STR STRING_VALUE.    (18)
-
-	.  reduce 18 (src line 127)
-
-
-state 99
-	action_args_content_stmt:  STR IDENTIFIER.    (20)
-
-	.  reduce 20 (src line 129)
-
-
-state 100
-	flow_action_content_stmt:  ACTION ASSIGN STRING_VALUE.SEMICOLON ARGS ASSIGN flow_args_stmt SEMICOLON 
-	flow_action_content_stmt:  ACTION ASSIGN STRING_VALUE.SEMICOLON 
-
-	SEMICOLON  shift 102
-	.  error
-
-
-state 101
-	flow_action_content_stmt:  ACTION ASSIGN IDENTIFIER.SEMICOLON ARGS ASSIGN flow_args_stmt SEMICOLON 
-	flow_action_content_stmt:  ACTION ASSIGN IDENTIFIER.SEMICOLON 
-
-	SEMICOLON  shift 103
-	.  error
-
-
-state 102
-	flow_action_content_stmt:  ACTION ASSIGN STRING_VALUE SEMICOLON.ARGS ASSIGN flow_args_stmt SEMICOLON 
-	flow_action_content_stmt:  ACTION ASSIGN STRING_VALUE SEMICOLON.    (35)
-
-	ARGS  shift 104
-	.  reduce 35 (src line 204)
-
-
-state 103
-	flow_action_content_stmt:  ACTION ASSIGN IDENTIFIER SEMICOLON.ARGS ASSIGN flow_args_stmt SEMICOLON 
-	flow_action_content_stmt:  ACTION ASSIGN IDENTIFIER SEMICOLON.    (36)
-
-	ARGS  shift 105
-	.  reduce 36 (src line 209)
-
-
-state 104
-	flow_action_content_stmt:  ACTION ASSIGN STRING_VALUE SEMICOLON ARGS.ASSIGN flow_args_stmt SEMICOLON 
-
-	ASSIGN  shift 106
-	.  error
-
-
-state 105
-	flow_action_content_stmt:  ACTION ASSIGN IDENTIFIER SEMICOLON ARGS.ASSIGN flow_args_stmt SEMICOLON 
+	action_content_secret_args_stmt:  LPAREN CAPEM.ASSIGN STRING_VALUE RPAREN 
+	action_content_secret_args_stmt:  LPAREN CAPEM.ASSIGN IDENTIFIER RPAREN 
 
 	ASSIGN  shift 107
 	.  error
 
 
-state 106
-	flow_action_content_stmt:  ACTION ASSIGN STRING_VALUE SEMICOLON ARGS ASSIGN.flow_args_stmt SEMICOLON 
+state 91
+	action_stmt:  ACTION IDENTIFIER action_content_addr_stmt action_content_method_stmt action_content_secret_stmt action_content_args_stmt action_return_stmt ACTION_END.    (7)
 
-	LPAREN  shift 109
+	.  reduce 7 (src line 116)
+
+
+state 92
+	flow_step_stmt:  STEP IDENTIFIER TO return_stmt flow_action_stmt SEMICOLON.    (35)
+
+	.  reduce 35 (src line 219)
+
+
+state 93
+	flow_action_stmt:  LCURLY flow_action_content_stmt.RCURLY 
+
+	RCURLY  shift 108
 	.  error
 
-	flow_args_stmt  goto 108
+
+state 94
+	flow_action_content_stmt:  ACTION.ASSIGN STRING_VALUE SEMICOLON ARGS ASSIGN flow_args_stmt SEMICOLON 
+	flow_action_content_stmt:  ACTION.ASSIGN IDENTIFIER SEMICOLON ARGS ASSIGN flow_args_stmt SEMICOLON 
+	flow_action_content_stmt:  ACTION.ASSIGN STRING_VALUE SEMICOLON 
+	flow_action_content_stmt:  ACTION.ASSIGN IDENTIFIER SEMICOLON 
+
+	ASSIGN  shift 109
+	.  error
+
+
+state 95
+	return_stmt:  LPAREN return_content_stmts RPAREN.    (50)
+
+	.  reduce 50 (src line 281)
+
+
+state 96
+	return_content_stmts:  return_content_stmts OR.return_content_stmt 
+
+	IDENTIFIER  shift 81
+	.  error
+
+	return_content_stmt  goto 110
+
+state 97
+	return_content_stmt:  IDENTIFIER DEST.IDENTIFIER 
+
+	IDENTIFIER  shift 111
+	.  error
+
+
+state 98
+	flow_step_stmt:  STEP STRING_VALUE TO return_stmt flow_action_stmt SEMICOLON.    (37)
+
+	.  reduce 37 (src line 228)
+
+
+state 99
+	flow_step_stmt:  DECI IDENTIFIER TO return_stmt flow_action_stmt SEMICOLON.    (36)
+
+	.  reduce 36 (src line 224)
+
+
+state 100
+	flow_step_stmt:  DECI STRING_VALUE TO return_stmt flow_action_stmt SEMICOLON.    (38)
+
+	.  reduce 38 (src line 232)
+
+
+state 101
+	action_return_stmt:  RETURN ASSIGN return_stmt SEMICOLON.    (28)
+
+	.  reduce 28 (src line 180)
+
+
+state 102
+	action_args_stmt:  LPAREN action_args_content_stmts RPAREN.    (20)
+
+	.  reduce 20 (src line 164)
+
+
+state 103
+	action_args_content_stmts:  action_args_content_stmts action_args_content_stmt.    (22)
+
+	.  reduce 22 (src line 169)
+
+
+state 104
+	action_args_content_stmt:  COMMA.action_args_content_stmt 
+
+	COMMA  shift 104
+	INT  shift 105
+	STR  shift 106
+	.  error
+
+	action_args_content_stmt  goto 112
+
+state 105
+	action_args_content_stmt:  INT.STRING_VALUE 
+	action_args_content_stmt:  INT.IDENTIFIER 
+
+	IDENTIFIER  shift 114
+	STRING_VALUE  shift 113
+	.  error
+
+
+state 106
+	action_args_content_stmt:  STR.STRING_VALUE 
+	action_args_content_stmt:  STR.IDENTIFIER 
+
+	IDENTIFIER  shift 116
+	STRING_VALUE  shift 115
+	.  error
+
 
 state 107
-	flow_action_content_stmt:  ACTION ASSIGN IDENTIFIER SEMICOLON ARGS ASSIGN.flow_args_stmt SEMICOLON 
+	action_content_secret_args_stmt:  LPAREN CAPEM ASSIGN.STRING_VALUE RPAREN 
+	action_content_secret_args_stmt:  LPAREN CAPEM ASSIGN.IDENTIFIER RPAREN 
 
-	LPAREN  shift 109
+	IDENTIFIER  shift 118
+	STRING_VALUE  shift 117
 	.  error
 
-	flow_args_stmt  goto 110
 
 state 108
-	flow_action_content_stmt:  ACTION ASSIGN STRING_VALUE SEMICOLON ARGS ASSIGN flow_args_stmt.SEMICOLON 
+	flow_action_stmt:  LCURLY flow_action_content_stmt RCURLY.    (39)
 
-	SEMICOLON  shift 111
-	.  error
+	.  reduce 39 (src line 238)
 
 
 state 109
-	flow_args_stmt:  LPAREN.flow_args_content_stmts RPAREN 
-	flow_args_content_stmts: .    (38)
+	flow_action_content_stmt:  ACTION ASSIGN.STRING_VALUE SEMICOLON ARGS ASSIGN flow_args_stmt SEMICOLON 
+	flow_action_content_stmt:  ACTION ASSIGN.IDENTIFIER SEMICOLON ARGS ASSIGN flow_args_stmt SEMICOLON 
+	flow_action_content_stmt:  ACTION ASSIGN.STRING_VALUE SEMICOLON 
+	flow_action_content_stmt:  ACTION ASSIGN.IDENTIFIER SEMICOLON 
 
-	.  reduce 38 (src line 220)
+	IDENTIFIER  shift 120
+	STRING_VALUE  shift 119
+	.  error
 
-	flow_args_content_stmts  goto 112
 
 state 110
-	flow_action_content_stmt:  ACTION ASSIGN IDENTIFIER SEMICOLON ARGS ASSIGN flow_args_stmt.SEMICOLON 
+	return_content_stmts:  return_content_stmts OR return_content_stmt.    (53)
 
-	SEMICOLON  shift 113
-	.  error
+	.  reduce 53 (src line 291)
 
 
 state 111
-	flow_action_content_stmt:  ACTION ASSIGN STRING_VALUE SEMICOLON ARGS ASSIGN flow_args_stmt SEMICOLON.    (33)
+	return_content_stmt:  IDENTIFIER DEST IDENTIFIER.    (54)
 
-	.  reduce 33 (src line 194)
+	.  reduce 54 (src line 297)
 
 
 state 112
-	flow_args_stmt:  LPAREN flow_args_content_stmts.RPAREN 
-	flow_args_content_stmts:  flow_args_content_stmts.flow_args_content_stmt 
+	action_args_content_stmt:  COMMA action_args_content_stmt.    (23)
 
-	IDENTIFIER  shift 117
-	RPAREN  shift 114
-	COMMA  shift 116
-	.  error
+	.  reduce 23 (src line 172)
 
-	flow_args_content_stmt  goto 115
 
 state 113
-	flow_action_content_stmt:  ACTION ASSIGN IDENTIFIER SEMICOLON ARGS ASSIGN flow_args_stmt SEMICOLON.    (34)
+	action_args_content_stmt:  INT STRING_VALUE.    (24)
 
-	.  reduce 34 (src line 199)
+	.  reduce 24 (src line 174)
 
 
 state 114
-	flow_args_stmt:  LPAREN flow_args_content_stmts RPAREN.    (37)
+	action_args_content_stmt:  INT IDENTIFIER.    (26)
 
-	.  reduce 37 (src line 216)
+	.  reduce 26 (src line 176)
 
 
 state 115
-	flow_args_content_stmts:  flow_args_content_stmts flow_args_content_stmt.    (39)
+	action_args_content_stmt:  STR STRING_VALUE.    (25)
 
-	.  reduce 39 (src line 221)
+	.  reduce 25 (src line 175)
 
 
 state 116
-	flow_args_content_stmt:  COMMA.flow_args_content_stmt 
+	action_args_content_stmt:  STR IDENTIFIER.    (27)
 
-	IDENTIFIER  shift 117
-	COMMA  shift 116
-	.  error
+	.  reduce 27 (src line 177)
 
-	flow_args_content_stmt  goto 118
 
 state 117
-	flow_args_content_stmt:  IDENTIFIER.ASSIGN NUMBER_VALUE 
-	flow_args_content_stmt:  IDENTIFIER.ASSIGN STRING_VALUE 
+	action_content_secret_args_stmt:  LPAREN CAPEM ASSIGN STRING_VALUE.RPAREN 
 
-	ASSIGN  shift 119
+	RPAREN  shift 121
 	.  error
 
 
 state 118
-	flow_args_content_stmt:  COMMA flow_args_content_stmt.    (40)
+	action_content_secret_args_stmt:  LPAREN CAPEM ASSIGN IDENTIFIER.RPAREN 
 
-	.  reduce 40 (src line 227)
+	RPAREN  shift 122
+	.  error
 
 
 state 119
-	flow_args_content_stmt:  IDENTIFIER ASSIGN.NUMBER_VALUE 
-	flow_args_content_stmt:  IDENTIFIER ASSIGN.STRING_VALUE 
+	flow_action_content_stmt:  ACTION ASSIGN STRING_VALUE.SEMICOLON ARGS ASSIGN flow_args_stmt SEMICOLON 
+	flow_action_content_stmt:  ACTION ASSIGN STRING_VALUE.SEMICOLON 
 
-	NUMBER_VALUE  shift 120
-	STRING_VALUE  shift 121
+	SEMICOLON  shift 123
 	.  error
 
 
 state 120
-	flow_args_content_stmt:  IDENTIFIER ASSIGN NUMBER_VALUE.    (41)
+	flow_action_content_stmt:  ACTION ASSIGN IDENTIFIER.SEMICOLON ARGS ASSIGN flow_args_stmt SEMICOLON 
+	flow_action_content_stmt:  ACTION ASSIGN IDENTIFIER.SEMICOLON 
 
-	.  reduce 41 (src line 229)
+	SEMICOLON  shift 124
+	.  error
 
 
 state 121
-	flow_args_content_stmt:  IDENTIFIER ASSIGN STRING_VALUE.    (42)
+	action_content_secret_args_stmt:  LPAREN CAPEM ASSIGN STRING_VALUE RPAREN.    (16)
 
-	.  reduce 42 (src line 230)
+	.  reduce 16 (src line 148)
 
 
-41 terminals, 22 nonterminals
-49 grammar rules, 122/8000 states
+state 122
+	action_content_secret_args_stmt:  LPAREN CAPEM ASSIGN IDENTIFIER RPAREN.    (17)
+
+	.  reduce 17 (src line 152)
+
+
+state 123
+	flow_action_content_stmt:  ACTION ASSIGN STRING_VALUE SEMICOLON.ARGS ASSIGN flow_args_stmt SEMICOLON 
+	flow_action_content_stmt:  ACTION ASSIGN STRING_VALUE SEMICOLON.    (42)
+
+	ARGS  shift 125
+	.  reduce 42 (src line 252)
+
+
+state 124
+	flow_action_content_stmt:  ACTION ASSIGN IDENTIFIER SEMICOLON.ARGS ASSIGN flow_args_stmt SEMICOLON 
+	flow_action_content_stmt:  ACTION ASSIGN IDENTIFIER SEMICOLON.    (43)
+
+	ARGS  shift 126
+	.  reduce 43 (src line 257)
+
+
+state 125
+	flow_action_content_stmt:  ACTION ASSIGN STRING_VALUE SEMICOLON ARGS.ASSIGN flow_args_stmt SEMICOLON 
+
+	ASSIGN  shift 127
+	.  error
+
+
+state 126
+	flow_action_content_stmt:  ACTION ASSIGN IDENTIFIER SEMICOLON ARGS.ASSIGN flow_args_stmt SEMICOLON 
+
+	ASSIGN  shift 128
+	.  error
+
+
+state 127
+	flow_action_content_stmt:  ACTION ASSIGN STRING_VALUE SEMICOLON ARGS ASSIGN.flow_args_stmt SEMICOLON 
+
+	LPAREN  shift 130
+	.  error
+
+	flow_args_stmt  goto 129
+
+state 128
+	flow_action_content_stmt:  ACTION ASSIGN IDENTIFIER SEMICOLON ARGS ASSIGN.flow_args_stmt SEMICOLON 
+
+	LPAREN  shift 130
+	.  error
+
+	flow_args_stmt  goto 131
+
+state 129
+	flow_action_content_stmt:  ACTION ASSIGN STRING_VALUE SEMICOLON ARGS ASSIGN flow_args_stmt.SEMICOLON 
+
+	SEMICOLON  shift 132
+	.  error
+
+
+state 130
+	flow_args_stmt:  LPAREN.flow_args_content_stmts RPAREN 
+	flow_args_content_stmts: .    (45)
+
+	.  reduce 45 (src line 268)
+
+	flow_args_content_stmts  goto 133
+
+state 131
+	flow_action_content_stmt:  ACTION ASSIGN IDENTIFIER SEMICOLON ARGS ASSIGN flow_args_stmt.SEMICOLON 
+
+	SEMICOLON  shift 134
+	.  error
+
+
+state 132
+	flow_action_content_stmt:  ACTION ASSIGN STRING_VALUE SEMICOLON ARGS ASSIGN flow_args_stmt SEMICOLON.    (40)
+
+	.  reduce 40 (src line 242)
+
+
+state 133
+	flow_args_stmt:  LPAREN flow_args_content_stmts.RPAREN 
+	flow_args_content_stmts:  flow_args_content_stmts.flow_args_content_stmt 
+
+	IDENTIFIER  shift 138
+	RPAREN  shift 135
+	COMMA  shift 137
+	.  error
+
+	flow_args_content_stmt  goto 136
+
+state 134
+	flow_action_content_stmt:  ACTION ASSIGN IDENTIFIER SEMICOLON ARGS ASSIGN flow_args_stmt SEMICOLON.    (41)
+
+	.  reduce 41 (src line 247)
+
+
+state 135
+	flow_args_stmt:  LPAREN flow_args_content_stmts RPAREN.    (44)
+
+	.  reduce 44 (src line 264)
+
+
+state 136
+	flow_args_content_stmts:  flow_args_content_stmts flow_args_content_stmt.    (46)
+
+	.  reduce 46 (src line 269)
+
+
+state 137
+	flow_args_content_stmt:  COMMA.flow_args_content_stmt 
+
+	IDENTIFIER  shift 138
+	COMMA  shift 137
+	.  error
+
+	flow_args_content_stmt  goto 139
+
+state 138
+	flow_args_content_stmt:  IDENTIFIER.ASSIGN NUMBER_VALUE 
+	flow_args_content_stmt:  IDENTIFIER.ASSIGN STRING_VALUE 
+
+	ASSIGN  shift 140
+	.  error
+
+
+state 139
+	flow_args_content_stmt:  COMMA flow_args_content_stmt.    (47)
+
+	.  reduce 47 (src line 275)
+
+
+state 140
+	flow_args_content_stmt:  IDENTIFIER ASSIGN.NUMBER_VALUE 
+	flow_args_content_stmt:  IDENTIFIER ASSIGN.STRING_VALUE 
+
+	NUMBER_VALUE  shift 141
+	STRING_VALUE  shift 142
+	.  error
+
+
+state 141
+	flow_args_content_stmt:  IDENTIFIER ASSIGN NUMBER_VALUE.    (48)
+
+	.  reduce 48 (src line 277)
+
+
+state 142
+	flow_args_content_stmt:  IDENTIFIER ASSIGN STRING_VALUE.    (49)
+
+	.  reduce 49 (src line 278)
+
+
+44 terminals, 24 nonterminals
+56 grammar rules, 143/16000 states
 0 shift/reduce, 0 reduce/reduce conflicts reported
-71 working sets used
-memory: parser 38/120000
+73 working sets used
+memory: parser 45/240000
 4 extra closures
-106 shift entries, 1 exceptions
-39 goto entries
+125 shift entries, 1 exceptions
+46 goto entries
 3 entries saved by goto default
-Optimizer space used: output 133/120000
-133 table entries, 0 zero
-maximum spread: 41, maximum offset: 116
+Optimizer space used: output 155/240000
+155 table entries, 0 zero
+maximum spread: 44, maximum offset: 137

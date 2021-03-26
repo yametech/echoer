@@ -33,13 +33,16 @@ var (
   _dict map[string]interface{}
   _variable string
   _number int64
+  _secret map[string]string
 
   // action
   ActionStatement
   _addr []string
+  _capem string
   _type ActionMethodType
   _grpc ActionMethodType
   _http ActionMethodType
+  _https ActionMethodType
 }
 
 // any non-terminal which returns a value needs a type, which is
@@ -51,7 +54,8 @@ var (
 %token ILLEGAL EOL
 %token IDENTIFIER NUMBER_VALUE ID STRING_VALUE
 %token LIST DICT
-%token FLOW FLOW_END STEP ACTION ARGS DECI ACTION_END ADDR METHOD FLOW_RUN FLOW_RUN_END RETURN
+%token FLOW FLOW_END STEP ACTION ARGS DECI ACTION_END ADDR METHOD FLOW_RUN FLOW_RUN_END RETURN HTTPS SECRET
+%token CAPEM
 %token LPAREN RPAREN LSQUARE RSQUARE LCURLY RCURLY SEMICOLON COMMA COLON
 %token HTTP GRPC
 %token INT STR
@@ -97,6 +101,30 @@ action_stmt:
             Returns: $6._returns,
         }
     }
+    	|
+	ACTION STRING_VALUE action_content_addr_stmt action_content_method_stmt action_content_secret_stmt action_content_args_stmt action_return_stmt ACTION_END
+	{
+	$$.ActionStatement = ActionStatement{
+	    Name: $2._string,
+	    Addr: $3._addr,
+	    Type: $4._type,
+	    Secret: $5._secret,
+	    Args: $6._args,
+	    Returns: $7._returns,
+	}
+	}
+	|
+	ACTION IDENTIFIER action_content_addr_stmt action_content_method_stmt action_content_secret_stmt action_content_args_stmt action_return_stmt ACTION_END
+    {
+	$$.ActionStatement = ActionStatement{
+	    Name: $2._identifier,
+	    Addr: $3._addr,
+	    Type: $4._type,
+	    Secret: $5._secret,
+	    Args: $6._args,
+	    Returns: $7._returns,
+	}
+    }
 	;
 
 action_content_addr_stmt:
@@ -106,7 +134,27 @@ action_content_addr_stmt:
 action_content_method_stmt:
 	|METHOD ASSIGN HTTP SEMICOLON { $$._type = $3._http }
 	|METHOD ASSIGN GRPC SEMICOLON { $$._type = $3._grpc }
+	|METHOD ASSIGN HTTPS SEMICOLON { $$._type = $3._https }
 	;
+
+action_content_secret_stmt:
+	SECRET ASSIGN action_content_secret_args_stmt SEMICOLON
+	{
+		$$._secret=make(map[string]string);
+		$$._secret["capem"] = $3._capem;
+	}
+
+action_content_secret_args_stmt:
+	|LPAREN CAPEM ASSIGN STRING_VALUE RPAREN
+	{
+		$$._capem = $4._string;
+	}
+	|LPAREN CAPEM ASSIGN IDENTIFIER RPAREN
+	{
+		$$._capem = $4._identifier;
+	}
+	;
+
 
 action_content_args_stmt:
 	|ARGS ASSIGN action_args_stmt SEMICOLON { $$._args = $3._args; }

@@ -103,6 +103,28 @@ flow_run my_flow_run
 flow_run_end
 `
 
+const ci_https = `
+action ci_https
+	addr = "compass.ym/tekton";
+	method = https;
+	secret = (capem="xxadsa");
+	args = (str project,str version,int retry_count);
+	return = (SUCCESS | FAIL);
+action_end
+`
+
+func Test_example_https(t *testing.T) {
+	val := parse(NewFssLexer([]byte(ci_https)))
+	if val != 0 {
+		fmt.Println("syntax error")
+	}
+	ac, err := actionSymPoolGet("ci_https")
+	if err != nil {
+		t.Fatal(err)
+	}
+	_ = ac
+}
+
 func Test_example(t *testing.T) {
 	// flex + goyacc
 	// flow
