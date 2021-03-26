@@ -75,3 +75,11 @@ flow_run my_flow_run
         args=(work_order="nz00001",version=12343);
     };
 flow_run_end
+
+action ci_https
+	addr = "compass.ym/tekton";
+	method = https;
+	secret = (capem="xxadsa");
+	args = (str project,str version,int retry_count);
+	return = (SUCCESS | FAIL);
+action_end

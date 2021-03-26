@@ -32,13 +32,16 @@ type fssSymType struct {
 	_dict       map[string]interface{}
 	_variable   string
 	_number     int64
+	_secret     map[string]string
 
 	// action
 	ActionStatement
-	_addr []string
-	_type ActionMethodType
-	_grpc ActionMethodType
-	_http ActionMethodType
+	_addr  []string
+	_capem string
+	_type  ActionMethodType
+	_grpc  ActionMethodType
+	_http  ActionMethodType
+	_https ActionMethodType
 }
 
 const ILLEGAL = 57346
@@ -61,24 +64,27 @@ const METHOD = 57362
 const FLOW_RUN = 57363
 const FLOW_RUN_END = 57364
 const RETURN = 57365
-const LPAREN = 57366
-const RPAREN = 57367
-const LSQUARE = 57368
-const RSQUARE = 57369
-const LCURLY = 57370
-const RCURLY = 57371
-const SEMICOLON = 57372
-const COMMA = 57373
-const COLON = 57374
-const HTTP = 57375
-const GRPC = 57376
-const INT = 57377
-const STR = 57378
-const ASSIGN = 57379
-const OR = 57380
-const AND = 57381
-const TO = 57382
-const DEST = 57383
+const HTTPS = 57366
+const SECRET = 57367
+const CAPEM = 57368
+const LPAREN = 57369
+const RPAREN = 57370
+const LSQUARE = 57371
+const RSQUARE = 57372
+const LCURLY = 57373
+const RCURLY = 57374
+const SEMICOLON = 57375
+const COMMA = 57376
+const COLON = 57377
+const HTTP = 57378
+const GRPC = 57379
+const INT = 57380
+const STR = 57381
+const ASSIGN = 57382
+const OR = 57383
+const AND = 57384
+const TO = 57385
+const DEST = 57386
 
 var fssToknames = [...]string{
 	"$end",
@@ -104,6 +110,9 @@ var fssToknames = [...]string{
 	"FLOW_RUN",
 	"FLOW_RUN_END",
 	"RETURN",
+	"HTTPS",
+	"SECRET",
+	"CAPEM",
 	"LPAREN",
 	"RPAREN",
 	"LSQUARE",
@@ -130,7 +139,7 @@ const fssEofCode = 1
 const fssErrCode = 2
 const fssInitialStackSize = 16
 
-//line fss.y:259
+//line fss.y:307
 
 //line yacctab:1
 var fssExca = [...]int{
@@ -141,93 +150,103 @@ var fssExca = [...]int{
 
 const fssPrivate = 57344
 
-const fssLast = 133
+const fssLast = 155
 
 var fssAct = [...]int{
-	115, 108, 87, 68, 52, 64, 81, 44, 43, 45,
-	42, 41, 86, 79, 119, 88, 107, 106, 88, 89,
-	90, 117, 89, 90, 36, 113, 80, 92, 58, 47,
-	38, 28, 48, 49, 117, 111, 103, 102, 85, 84,
-	114, 83, 82, 76, 74, 91, 116, 54, 55, 56,
-	51, 62, 61, 50, 40, 65, 69, 109, 53, 116,
-	70, 71, 72, 73, 60, 23, 23, 46, 24, 24,
-	105, 26, 17, 25, 21, 67, 7, 27, 63, 6,
-	57, 104, 31, 23, 93, 5, 24, 37, 30, 23,
-	29, 95, 24, 14, 78, 120, 16, 121, 101, 99,
-	39, 100, 98, 15, 94, 69, 19, 20, 18, 110,
-	97, 34, 32, 96, 35, 33, 13, 118, 11, 12,
-	9, 10, 66, 8, 112, 77, 22, 75, 59, 4,
-	3, 2, 1,
+	136, 129, 103, 80, 59, 76, 48, 97, 47, 36,
+	46, 45, 44, 102, 95, 140, 104, 128, 127, 104,
+	105, 106, 130, 105, 106, 55, 138, 96, 109, 107,
+	65, 52, 51, 40, 28, 138, 134, 53, 54, 42,
+	132, 124, 123, 101, 100, 99, 98, 50, 135, 57,
+	61, 62, 63, 58, 137, 92, 89, 66, 87, 73,
+	72, 71, 108, 137, 56, 75, 77, 82, 83, 84,
+	85, 37, 81, 122, 121, 60, 70, 68, 90, 38,
+	49, 23, 23, 7, 24, 24, 6, 91, 39, 25,
+	21, 17, 5, 27, 79, 31, 23, 26, 86, 24,
+	110, 43, 30, 23, 74, 64, 24, 112, 126, 125,
+	38, 14, 94, 141, 16, 142, 29, 120, 41, 118,
+	119, 15, 117, 111, 19, 20, 18, 81, 116, 114,
+	131, 115, 113, 34, 32, 78, 35, 33, 139, 13,
+	11, 9, 12, 10, 8, 133, 93, 22, 88, 67,
+	69, 4, 3, 2, 1,
 }
 
 var fssPact = [...]int{
-	64, -1000, -1000, -1000, -1000, 114, 112, 110, -1000, -1000,
-	53, 53, -1000, -1000, 52, 51, 57, -6, 57, 75,
-	69, -1000, -1000, 106, 105, -1000, 71, -7, 91, 71,
-	-1000, -1000, -29, -30, -32, -33, 44, -8, -1, 23,
-	44, 34, 34, 34, 34, 62, -9, 40, 22, 21,
-	-1000, 60, 27, 50, 27, 27, 27, -1000, 34, 14,
-	-1000, -1000, -1000, -1000, 13, 79, -12, -1000, -1000, -35,
-	12, 11, 9, 8, -1000, -13, -1000, 16, -10, -1000,
-	99, 98, -1000, -1000, -1000, -1000, -1000, -1000, -16, 104,
-	93, -1000, 92, -1000, -1000, -1000, -1000, -1000, -1000, -1000,
-	7, 6, 65, 54, -20, -21, 33, 33, 5, -1000,
-	-5, -1000, 15, -1000, -1000, -1000, 28, -23, -1000, 88,
-	-1000, -1000,
+	71, -1000, -1000, -1000, -1000, 135, 134, 133, -1000, -1000,
+	72, 72, -1000, -1000, 68, 67, 73, -6, 73, 89,
+	82, -1000, -1000, 128, 127, -1000, 63, -7, 109, 63,
+	-1000, -1000, -31, -32, -33, -35, 57, 94, -8, -9,
+	1, 31, 57, 94, 48, 48, 48, 48, 87, -10,
+	57, 50, 49, 28, 27, 26, -1000, 86, 57, 35,
+	66, 35, 35, 35, -1000, 48, 80, 25, -1000, 23,
+	52, -1000, -1000, -1000, -1000, 69, 22, 97, -14, -1000,
+	-1000, -37, 13, 12, 11, 10, -1000, -1000, -15, -1000,
+	-11, -1000, -1000, 30, -12, -1000, 121, 117, -1000, -1000,
+	-1000, -1000, -1000, -1000, -18, 123, 122, 113, -1000, 111,
+	-1000, -1000, -1000, -1000, -1000, -1000, -1000, 46, 45, 9,
+	8, -1000, -1000, 93, 92, -22, -23, -5, -5, 7,
+	-1000, 3, -1000, 20, -1000, -1000, -1000, 29, -25, -1000,
+	106, -1000, -1000,
 }
 
 var fssPgo = [...]int{
-	0, 132, 131, 130, 129, 96, 71, 24, 9, 128,
-	127, 2, 4, 93, 126, 5, 125, 1, 124, 0,
-	122, 3,
+	0, 154, 153, 152, 151, 114, 97, 9, 6, 71,
+	150, 149, 148, 2, 4, 111, 147, 5, 146, 1,
+	145, 0, 135, 3,
 }
 
 var fssR1 = [...]int{
-	0, 1, 1, 1, 3, 3, 5, 5, 6, 6,
-	6, 7, 7, 9, 10, 10, 11, 11, 11, 11,
-	11, 8, 4, 4, 2, 2, 13, 13, 14, 14,
-	14, 14, 15, 16, 16, 16, 16, 17, 18, 18,
-	19, 19, 19, 12, 12, 20, 20, 21, 21,
+	0, 1, 1, 1, 3, 3, 3, 3, 5, 5,
+	6, 6, 6, 6, 9, 10, 10, 10, 7, 7,
+	11, 12, 12, 13, 13, 13, 13, 13, 8, 4,
+	4, 2, 2, 15, 15, 16, 16, 16, 16, 17,
+	18, 18, 18, 18, 19, 20, 20, 21, 21, 21,
+	14, 14, 22, 22, 23, 23,
 }
 
 var fssR2 = [...]int{
-	0, 1, 1, 1, 7, 7, 0, 4, 0, 4,
-	4, 0, 4, 3, 0, 2, 2, 2, 2, 2,
-	2, 4, 4, 4, 4, 4, 0, 2, 6, 6,
-	6, 6, 3, 8, 8, 4, 4, 3, 0, 2,
-	2, 3, 3, 3, 2, 1, 3, 3, 1,
+	0, 1, 1, 1, 7, 7, 8, 8, 0, 4,
+	0, 4, 4, 4, 4, 0, 5, 5, 0, 4,
+	3, 0, 2, 2, 2, 2, 2, 2, 4, 4,
+	4, 4, 4, 0, 2, 6, 6, 6, 6, 3,
+	8, 8, 4, 4, 3, 0, 2, 2, 3, 3,
+	3, 2, 1, 3, 3, 1,
 }
 
 var fssChk = [...]int{
 	-1000, -1, -2, -3, -4, 21, 15, 12, 9, 6,
-	9, 6, 9, 6, -13, -13, -5, 19, -5, -13,
-	-13, 22, -14, 14, 17, 22, -6, 20, 37, -6,
-	13, 13, 6, 9, 6, 9, -7, 16, 37, 9,
-	-7, 40, 40, 40, 40, -8, 23, 37, 33, 34,
-	30, -8, -12, 24, -12, -12, -12, 18, 37, -9,
-	24, 30, 30, 18, -15, 28, -20, 25, -21, 6,
-	-15, -15, -15, -12, 30, -10, 30, -16, 15, 25,
-	38, 41, 30, 30, 30, 30, 25, -11, 31, 35,
-	36, 29, 37, -21, 6, -11, 9, 6, 9, 6,
-	9, 6, 30, 30, 16, 16, 37, 37, -17, 24,
-	-17, 30, -18, 30, 25, -19, 31, 6, -19, 37,
-	7, 9,
+	9, 6, 9, 6, -15, -15, -5, 19, -5, -15,
+	-15, 22, -16, 14, 17, 22, -6, 20, 40, -6,
+	13, 13, 6, 9, 6, 9, -7, -9, 16, 25,
+	40, 9, -7, -9, 43, 43, 43, 43, -8, 23,
+	-7, 40, 40, 36, 37, 24, 33, -8, -7, -14,
+	27, -14, -14, -14, 18, 40, -8, -11, 27, -10,
+	27, 33, 33, 33, 18, -8, -17, 31, -22, 28,
+	-23, 6, -17, -17, -17, -14, 18, 33, -12, 33,
+	26, 18, 33, -18, 15, 28, 41, 44, 33, 33,
+	33, 33, 28, -13, 34, 38, 39, 40, 32, 40,
+	-23, 6, -13, 9, 6, 9, 6, 9, 6, 9,
+	6, 28, 28, 33, 33, 16, 16, 40, 40, -19,
+	27, -19, 33, -20, 33, 28, -21, 34, 6, -21,
+	40, 7, 9,
 }
 
 var fssDef = [...]int{
-	0, -2, 1, 2, 3, 0, 0, 0, 26, 26,
-	6, 6, 26, 26, 0, 0, 8, 0, 8, 0,
-	0, 24, 27, 0, 0, 25, 11, 0, 0, 11,
-	22, 23, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	7, 0, 0, 0, 0, 0, 0, 4, 0, 0,
-	14, 9, 10, 5, 0, 0, 0, 44, 45, 48,
-	0, 0, 0, 0, 12, 0, 28, 0, 0, 43,
-	0, 0, 30, 29, 31, 21, 13, 15, 0, 0,
-	0, 32, 0, 46, 47, 16, 17, 19, 18, 20,
-	0, 0, 35, 36, 0, 0, 0, 0, 0, 38,
-	0, 33, 0, 34, 37, 39, 0, 0, 40, 0,
-	41, 42,
+	0, -2, 1, 2, 3, 0, 0, 0, 33, 33,
+	8, 8, 33, 33, 0, 0, 10, 0, 10, 0,
+	0, 31, 34, 0, 0, 32, 18, 0, 0, 18,
+	29, 30, 0, 0, 0, 0, 0, 18, 0, 0,
+	0, 0, 0, 18, 0, 0, 0, 0, 0, 0,
+	0, 0, 15, 0, 0, 0, 9, 0, 0, 0,
+	0, 0, 0, 0, 4, 0, 0, 0, 21, 0,
+	0, 11, 12, 13, 5, 0, 0, 0, 0, 51,
+	52, 55, 0, 0, 0, 0, 6, 19, 0, 14,
+	0, 7, 35, 0, 0, 50, 0, 0, 37, 36,
+	38, 28, 20, 22, 0, 0, 0, 0, 39, 0,
+	53, 54, 23, 24, 26, 25, 27, 0, 0, 0,
+	0, 16, 17, 42, 43, 0, 0, 0, 0, 0,
+	45, 0, 40, 0, 41, 44, 46, 0, 0, 47,
+	0, 48, 49,
 }
 
 var fssTok1 = [...]int{
@@ -239,6 +258,7 @@ var fssTok2 = [...]int{
 	12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
 	22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
 	32, 33, 34, 35, 36, 37, 38, 39, 40, 41,
+	42, 43, 44,
 }
 
 var fssTok3 = [...]int{
@@ -584,25 +604,25 @@ fssdefault:
 
 	case 1:
 		fssDollar = fssS[fsspt-1 : fsspt+1]
-//line fss.y:65
+//line fss.y:69
 		{
 			flowRunSymPoolPut(fssDollar[1].Flow, fssDollar[1])
 		}
 	case 2:
 		fssDollar = fssS[fsspt-1 : fsspt+1]
-//line fss.y:69
+//line fss.y:73
 		{
 			actionSymPoolPut(fssDollar[1].ActionStatement.Name, fssDollar[1])
 		}
 	case 3:
 		fssDollar = fssS[fsspt-1 : fsspt+1]
-//line fss.y:73
+//line fss.y:77
 		{
 			flowSymPoolPut(fssDollar[1].Flow, fssDollar[1])
 		}
 	case 4:
 		fssDollar = fssS[fsspt-7 : fsspt+1]
-//line fss.y:80
+//line fss.y:84
 		{
 			fssVAL.ActionStatement = ActionStatement{
 				Name:    fssDollar[2]._string,
@@ -614,7 +634,7 @@ fssdefault:
 		}
 	case 5:
 		fssDollar = fssS[fsspt-7 : fsspt+1]
-//line fss.y:91
+//line fss.y:95
 		{
 			fssVAL.ActionStatement = ActionStatement{
 				Name:    fssDollar[2]._identifier,
@@ -624,229 +644,280 @@ fssdefault:
 				Returns: fssDollar[6]._returns,
 			}
 		}
-	case 7:
-		fssDollar = fssS[fsspt-4 : fsspt+1]
-//line fss.y:103
+	case 6:
+		fssDollar = fssS[fsspt-8 : fsspt+1]
+//line fss.y:106
 		{
-			fssVAL._addr = append(fssVAL._addr, strings.Split(strings.Trim(fssDollar[3]._string, "\""), ",")...)
+			fssVAL.ActionStatement = ActionStatement{
+				Name:    fssDollar[2]._string,
+				Addr:    fssDollar[3]._addr,
+				Type:    fssDollar[4]._type,
+				Secret:  fssDollar[5]._secret,
+				Args:    fssDollar[6]._args,
+				Returns: fssDollar[7]._returns,
+			}
+		}
+	case 7:
+		fssDollar = fssS[fsspt-8 : fsspt+1]
+//line fss.y:118
+		{
+			fssVAL.ActionStatement = ActionStatement{
+				Name:    fssDollar[2]._identifier,
+				Addr:    fssDollar[3]._addr,
+				Type:    fssDollar[4]._type,
+				Secret:  fssDollar[5]._secret,
+				Args:    fssDollar[6]._args,
+				Returns: fssDollar[7]._returns,
+			}
 		}
 	case 9:
 		fssDollar = fssS[fsspt-4 : fsspt+1]
-//line fss.y:107
+//line fss.y:131
+		{
+			fssVAL._addr = append(fssVAL._addr, strings.Split(strings.Trim(fssDollar[3]._string, "\""), ",")...)
+		}
+	case 11:
+		fssDollar = fssS[fsspt-4 : fsspt+1]
+//line fss.y:135
 		{
 			fssVAL._type = fssDollar[3]._http
 		}
-	case 10:
+	case 12:
 		fssDollar = fssS[fsspt-4 : fsspt+1]
-//line fss.y:108
+//line fss.y:136
 		{
 			fssVAL._type = fssDollar[3]._grpc
 		}
-	case 12:
+	case 13:
 		fssDollar = fssS[fsspt-4 : fsspt+1]
-//line fss.y:112
+//line fss.y:137
+		{
+			fssVAL._type = fssDollar[3]._https
+		}
+	case 14:
+		fssDollar = fssS[fsspt-4 : fsspt+1]
+//line fss.y:142
+		{
+			fssVAL._secret = make(map[string]string)
+			fssVAL._secret["capem"] = fssDollar[3]._capem
+		}
+	case 16:
+		fssDollar = fssS[fsspt-5 : fsspt+1]
+//line fss.y:149
+		{
+			fssVAL._capem = fssDollar[4]._string
+		}
+	case 17:
+		fssDollar = fssS[fsspt-5 : fsspt+1]
+//line fss.y:153
+		{
+			fssVAL._capem = fssDollar[4]._identifier
+		}
+	case 19:
+		fssDollar = fssS[fsspt-4 : fsspt+1]
+//line fss.y:160
 		{
 			fssVAL._args = fssDollar[3]._args
 		}
-	case 13:
+	case 20:
 		fssDollar = fssS[fsspt-3 : fsspt+1]
-//line fss.y:117
+//line fss.y:165
 		{
 			fssVAL = fssDollar[2]
 		}
-	case 15:
+	case 22:
 		fssDollar = fssS[fsspt-2 : fsspt+1]
-//line fss.y:121
+//line fss.y:169
 		{
 			fssVAL._args = append(fssVAL._args, fssDollar[2]._param)
 		}
-	case 16:
+	case 23:
 		fssDollar = fssS[fsspt-2 : fsspt+1]
-//line fss.y:125
+//line fss.y:173
 		{
 			fssVAL._param = fssDollar[2]._param
 		}
-	case 17:
+	case 24:
 		fssDollar = fssS[fsspt-2 : fsspt+1]
-//line fss.y:126
+//line fss.y:174
 		{
 			fssVAL._param = Param{Name: fssDollar[2]._string, ParamType: NumberType}
 		}
-	case 18:
+	case 25:
 		fssDollar = fssS[fsspt-2 : fsspt+1]
-//line fss.y:127
+//line fss.y:175
 		{
 			fssVAL._param = Param{Name: fssDollar[2]._string, ParamType: StringType}
 		}
-	case 19:
+	case 26:
 		fssDollar = fssS[fsspt-2 : fsspt+1]
-//line fss.y:128
+//line fss.y:176
 		{
 			fssVAL._param = Param{Name: fssDollar[2]._identifier, ParamType: NumberType}
 		}
-	case 20:
+	case 27:
 		fssDollar = fssS[fsspt-2 : fsspt+1]
-//line fss.y:129
+//line fss.y:177
 		{
 			fssVAL._param = Param{Name: fssDollar[2]._identifier, ParamType: StringType}
 		}
-	case 21:
+	case 28:
 		fssDollar = fssS[fsspt-4 : fsspt+1]
-//line fss.y:134
+//line fss.y:182
 		{
 			fssVAL._returns = fssDollar[3]._returns
 		}
-	case 22:
-		fssDollar = fssS[fsspt-4 : fsspt+1]
-//line fss.y:141
-		{
-			fssVAL.Flow = fssDollar[2]._string
-			fssVAL.Steps = fssDollar[3].Steps
-		}
-	case 23:
-		fssDollar = fssS[fsspt-4 : fsspt+1]
-//line fss.y:146
-		{
-			fssVAL.Flow = fssDollar[2]._identifier
-			fssVAL.Steps = fssDollar[3].Steps
-		}
-	case 24:
-		fssDollar = fssS[fsspt-4 : fsspt+1]
-//line fss.y:153
-		{
-			fssVAL.Flow = fssDollar[2]._string
-			fssVAL.Steps = fssDollar[3].Steps
-		}
-	case 25:
-		fssDollar = fssS[fsspt-4 : fsspt+1]
-//line fss.y:158
-		{
-			fssVAL.Flow = fssDollar[2]._identifier
-			fssVAL.Steps = fssDollar[3].Steps
-		}
-	case 27:
-		fssDollar = fssS[fsspt-2 : fsspt+1]
-//line fss.y:166
-		{
-			fssVAL.Steps = append(fssVAL.Steps, fssDollar[2]._step)
-		}
-	case 28:
-		fssDollar = fssS[fsspt-6 : fsspt+1]
-//line fss.y:173
-		{
-			fssVAL._step = Step{Name: fssDollar[2]._identifier, Action: fssDollar[5]._action, Returns: fssDollar[4]._returns, StepType: Normal}
-		}
 	case 29:
-		fssDollar = fssS[fsspt-6 : fsspt+1]
-//line fss.y:177
+		fssDollar = fssS[fsspt-4 : fsspt+1]
+//line fss.y:189
 		{
-			fssVAL._step = Step{Name: fssDollar[2]._identifier, Action: fssDollar[5]._action, Returns: fssDollar[4]._returns, StepType: Decision}
+			fssVAL.Flow = fssDollar[2]._string
+			fssVAL.Steps = fssDollar[3].Steps
 		}
 	case 30:
-		fssDollar = fssS[fsspt-6 : fsspt+1]
-//line fss.y:181
+		fssDollar = fssS[fsspt-4 : fsspt+1]
+//line fss.y:194
 		{
-			fssVAL._step = Step{Name: fssDollar[2]._string, Action: fssDollar[5]._action, Returns: fssDollar[4]._returns, StepType: Normal}
+			fssVAL.Flow = fssDollar[2]._identifier
+			fssVAL.Steps = fssDollar[3].Steps
 		}
 	case 31:
-		fssDollar = fssS[fsspt-6 : fsspt+1]
-//line fss.y:185
-		{
-			fssVAL._step = Step{Name: fssDollar[2]._string, Action: fssDollar[5]._action, Returns: fssDollar[4]._returns, StepType: Decision}
-		}
-	case 32:
-		fssDollar = fssS[fsspt-3 : fsspt+1]
-//line fss.y:191
-		{
-			fssVAL = fssDollar[2]
-		}
-	case 33:
-		fssDollar = fssS[fsspt-8 : fsspt+1]
-//line fss.y:196
-		{
-			fssVAL._action = Action{Name: fssDollar[3]._string, Args: fssDollar[7]._args}
-		}
-	case 34:
-		fssDollar = fssS[fsspt-8 : fsspt+1]
+		fssDollar = fssS[fsspt-4 : fsspt+1]
 //line fss.y:201
 		{
-			fssVAL._action = Action{Name: fssDollar[3]._identifier, Args: fssDollar[7]._args}
+			fssVAL.Flow = fssDollar[2]._string
+			fssVAL.Steps = fssDollar[3].Steps
 		}
-	case 35:
+	case 32:
 		fssDollar = fssS[fsspt-4 : fsspt+1]
 //line fss.y:206
 		{
-			fssVAL._action = Action{Name: fssDollar[3]._string}
+			fssVAL.Flow = fssDollar[2]._identifier
+			fssVAL.Steps = fssDollar[3].Steps
+		}
+	case 34:
+		fssDollar = fssS[fsspt-2 : fsspt+1]
+//line fss.y:214
+		{
+			fssVAL.Steps = append(fssVAL.Steps, fssDollar[2]._step)
+		}
+	case 35:
+		fssDollar = fssS[fsspt-6 : fsspt+1]
+//line fss.y:221
+		{
+			fssVAL._step = Step{Name: fssDollar[2]._identifier, Action: fssDollar[5]._action, Returns: fssDollar[4]._returns, StepType: Normal}
 		}
 	case 36:
+		fssDollar = fssS[fsspt-6 : fsspt+1]
+//line fss.y:225
+		{
+			fssVAL._step = Step{Name: fssDollar[2]._identifier, Action: fssDollar[5]._action, Returns: fssDollar[4]._returns, StepType: Decision}
+		}
+	case 37:
+		fssDollar = fssS[fsspt-6 : fsspt+1]
+//line fss.y:229
+		{
+			fssVAL._step = Step{Name: fssDollar[2]._string, Action: fssDollar[5]._action, Returns: fssDollar[4]._returns, StepType: Normal}
+		}
+	case 38:
+		fssDollar = fssS[fsspt-6 : fsspt+1]
+//line fss.y:233
+		{
+			fssVAL._step = Step{Name: fssDollar[2]._string, Action: fssDollar[5]._action, Returns: fssDollar[4]._returns, StepType: Decision}
+		}
+	case 39:
+		fssDollar = fssS[fsspt-3 : fsspt+1]
+//line fss.y:239
+		{
+			fssVAL = fssDollar[2]
+		}
+	case 40:
+		fssDollar = fssS[fsspt-8 : fsspt+1]
+//line fss.y:244
+		{
+			fssVAL._action = Action{Name: fssDollar[3]._string, Args: fssDollar[7]._args}
+		}
+	case 41:
+		fssDollar = fssS[fsspt-8 : fsspt+1]
+//line fss.y:249
+		{
+			fssVAL._action = Action{Name: fssDollar[3]._identifier, Args: fssDollar[7]._args}
+		}
+	case 42:
 		fssDollar = fssS[fsspt-4 : fsspt+1]
-//line fss.y:211
+//line fss.y:254
+		{
+			fssVAL._action = Action{Name: fssDollar[3]._string}
+		}
+	case 43:
+		fssDollar = fssS[fsspt-4 : fsspt+1]
+//line fss.y:259
 		{
 			fssVAL._action = Action{Name: fssDollar[3]._identifier}
 		}
-	case 37:
+	case 44:
 		fssDollar = fssS[fsspt-3 : fsspt+1]
-//line fss.y:217
+//line fss.y:265
 		{
 			fssVAL = fssDollar[2]
 		}
-	case 39:
+	case 46:
 		fssDollar = fssS[fsspt-2 : fsspt+1]
-//line fss.y:222
+//line fss.y:270
 		{
 			fssVAL._args = append(fssVAL._args, fssDollar[2]._param)
 		}
-	case 40:
+	case 47:
 		fssDollar = fssS[fsspt-2 : fsspt+1]
-//line fss.y:228
+//line fss.y:276
 		{
 			fssVAL._param = fssDollar[2]._param
 		}
-	case 41:
+	case 48:
 		fssDollar = fssS[fsspt-3 : fsspt+1]
-//line fss.y:229
+//line fss.y:277
 		{
 			fssVAL._param = Param{Name: fssDollar[1]._identifier, ParamType: NumberType, Value: fssDollar[3]._number}
 		}
-	case 42:
+	case 49:
 		fssDollar = fssS[fsspt-3 : fsspt+1]
-//line fss.y:230
+//line fss.y:278
 		{
 			fssVAL._param = Param{Name: fssDollar[1]._identifier, ParamType: StringType, Value: fssDollar[3]._string}
 		}
-	case 43:
+	case 50:
 		fssDollar = fssS[fsspt-3 : fsspt+1]
-//line fss.y:234
+//line fss.y:282
 		{
 			fssVAL = fssDollar[2]
 		}
-	case 44:
+	case 51:
 		fssDollar = fssS[fsspt-2 : fsspt+1]
-//line fss.y:235
+//line fss.y:283
 		{
 			fssVAL._returns = append(fssVAL._returns, Return{State: "DONE", Next: ""})
 		}
-	case 45:
+	case 52:
 		fssDollar = fssS[fsspt-1 : fsspt+1]
-//line fss.y:240
+//line fss.y:288
 		{
 			fssVAL._returns = append(fssVAL._returns, fssDollar[1]._return)
 		}
-	case 46:
+	case 53:
 		fssDollar = fssS[fsspt-3 : fsspt+1]
-//line fss.y:244
+//line fss.y:292
 		{
 			fssVAL._returns = append(fssVAL._returns, fssDollar[3]._return)
 		}
-	case 47:
+	case 54:
 		fssDollar = fssS[fsspt-3 : fsspt+1]
-//line fss.y:250
+//line fss.y:298
 		{
 			fssVAL._return = Return{State: fssDollar[1]._identifier, Next: fssDollar[3]._identifier}
 		}
-	case 48:
+	case 55:
 		fssDollar = fssS[fsspt-1 : fsspt+1]
-//line fss.y:254
+//line fss.y:302
 		{
 			fssVAL._return = Return{State: fssDollar[1]._identifier}
 		}

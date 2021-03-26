@@ -1,6 +1,7 @@
 package factory
 
 import (
+	"encoding/base64"
 	"fmt"
 	"github.com/yametech/echoer/pkg/core"
 	"github.com/yametech/echoer/pkg/fsm"
@@ -154,6 +155,12 @@ func (t *Translation) ToFlow(stmt *fss.FlowStmt) error {
 }
 
 func (t *Translation) ToAction(stmt *fss.ActionStmt) error {
+	if stmt.ActionStatement.Type == fss.ActionHTTPSMethod {
+		_, err := base64.StdEncoding.DecodeString(stmt.ActionStatement.Secret["capem"])
+		if err != nil {
+			return fmt.Errorf("action (%s) capem decode error", stmt.ActionStatement.Name)
+		}
+	}
 	_, err := t.GetAction(stmt.ActionStatement.Name)
 	if err != nil {
 		if err == storage.NotFound {
@@ -170,6 +177,7 @@ CREATE:
 		},
 		Spec: resource.ActionSpec{
 			Params:       make(resource.ActionParams),
+			CaPEM:        stmt.ActionStatement.Secret["capem"],
 			Endpoints:    make([]string, 0),
 			ReturnStates: make([]string, 0),
 		},
@@ -181,6 +189,8 @@ CREATE:
 	for _, _return := range stmt.ActionStatement.Returns {
 		action.Spec.ReturnStates = append(action.Spec.ReturnStates, _return.State)
 	}
+
+	action.Spec.ServeType = resource.ServeType(stmt.ActionStatement.Type)
 
 	for _, _arg := range stmt.ActionStatement.Args {
 		switch _arg.ParamType {
