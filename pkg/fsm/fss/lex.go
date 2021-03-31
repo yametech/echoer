@@ -150,6 +150,13 @@ func (p *fssLex) Lex(lval *fssSymType) int {
 	case C.GRPC:
 		lval._grpc = ActionGRPCMethod
 		return GRPC
+	case C.HTTPS:
+		lval._https = ActionHTTPSMethod
+		return HTTPS
+	case C.SECRET:
+		return SECRET
+	case C.CAPEM:
+		return CAPEM
 	case C.INT:
 		return INT
 	case C.STR:

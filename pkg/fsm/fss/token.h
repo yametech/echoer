@@ -49,4 +49,7 @@ enum
     FLOW_RUN = 293,
     FLOW_RUN_END = 294,
     RETURN = 295,
+    SECRET = 296,
+    HTTPS = 297,
+    CAPEM = 299,
 };

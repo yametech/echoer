@@ -11,6 +11,12 @@ type GrpcInterface interface {
 	Params(map[string]interface{}) GrpcInterface
 }
 
+type HttpsInterface interface {
+	Post(urls []string) HttpsInterface
+	Params(map[string]interface{}) HttpsInterface
+	Do() error
+}
+
 type Interface interface {
 	HttpInterface() HttpInterface
 	GrpcInterface() GrpcInterface
@@ -19,12 +25,14 @@ type Interface interface {
 type HookClient struct {
 	*http
 	*gRPC
+	*https
 }
 
 func NewHookClient() *HookClient {
 	return &HookClient{
 		http: newHttp(),
 		gRPC: nil,
+		https:newHttps(),
 	}
 }
 
@@ -34,4 +42,9 @@ func (hc *HookClient) GrpcInterface() GrpcInterface {
 
 func (hc *HookClient) HttpInterface() HttpInterface {
 	return hc.http
+}
+
+
+func (hc *HookClient) HttpsInterface() HttpsInterface {
+	return hc.https
 }

@@ -93,14 +93,16 @@ type ActionMethodType uint8
 const (
 	ActionHTTPMethod ActionMethodType = iota
 	ActionGRPCMethod
+	ActionHTTPSMethod
 )
 
 type ActionStatement struct {
-	Name    string           `json:"name"`
-	Addr    []string         `json:"addr"`
-	Type    ActionMethodType `json:"type"`
-	Args    []Param          `json:"args"`
-	Returns Returns          `json:"returns"`
+	Name    string            `json:"name"`
+	Addr    []string          `json:"addr"`
+	Type    ActionMethodType  `json:"type"`
+	Secret  map[string]string `json:"secret"`
+	Args    []Param           `json:"args"`
+	Returns Returns           `json:"returns"`
 }
 
 type ActionStmt struct {

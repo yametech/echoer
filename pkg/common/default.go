@@ -17,6 +17,7 @@ const (
 	AckStates       ActionParamIdType = "ackStates"
 	UUID            ActionParamIdType = "uuid"
 	GlobalVariables ActionParamIdType = "globalVariables"
+	CaPEM           ActionParamIdType = "capem"
 )
 
 type Common struct {
