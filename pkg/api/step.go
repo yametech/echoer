@@ -77,7 +77,7 @@ func (h *Handle) ackStep(g *gin.Context) {
 
 	if step.Spec.Done {
 		g.JSON(http.StatusOK, "")
-		fmt.Printf("[INFO] flowrun (%s) step (%s) already done (%s)\n", ackStep.FlowId, ackStep.StepName, err)
+		fmt.Printf("[INFO] flowrun (%s) step (%s) already done\n", ackStep.FlowId, ackStep.StepName)
 		return
 	}
 
