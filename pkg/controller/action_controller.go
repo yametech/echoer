@@ -135,6 +135,10 @@ func (a *ActionController) realAction(obj *resource.Step) error {
 				Post(_action.Spec.Endpoints).
 				Do()
 
+			retryTime := 1
+			if obj.Spec.RetryCount != 0 {
+				retryTime = int(obj.Spec.RetryCount)
+			}
 			if err != nil {
 				fmt.Printf(
 					"[ERROR] flowrun (%s) step (%s) execute action (%s) error: %s\n",
@@ -145,11 +149,15 @@ func (a *ActionController) realAction(obj *resource.Step) error {
 				)
 				a.tq.Schedule(
 					&DelayStepAction{obj, a.IStorage},
-					time.Duration(obj.Spec.RetryCount*1000),
+					time.Duration(retryTime)*time.Second,
 				)
 			}
 		}()
 	case resource.HTTPS:
+		retryTime := 1
+		if obj.Spec.RetryCount != 0 {
+			retryTime = int(obj.Spec.RetryCount)
+		}
 		go func() {
 			err := action.NewHookClient().
 				HttpsInterface().
@@ -166,7 +174,7 @@ func (a *ActionController) realAction(obj *resource.Step) error {
 				)
 				a.tq.Schedule(
 					&DelayStepAction{obj, a.IStorage},
-					time.Duration(obj.Spec.RetryCount*1000),
+					time.Duration(retryTime)*time.Second,
 				)
 			}
 		}()
