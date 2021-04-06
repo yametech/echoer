@@ -75,6 +75,12 @@ func (h *Handle) ackStep(g *gin.Context) {
 		return
 	}
 
+	if step.Spec.Done {
+		g.JSON(http.StatusOK, "")
+		fmt.Printf("[INFO] flowrun (%s) step (%s) already done\n", ackStep.FlowId, ackStep.StepName)
+		return
+	}
+
 	step.Spec.Response.State = ackStep.AckState
 	step.Spec.ActionRun.Done = ackStep.Done
 	step.Spec.Data = ackStep.Data

@@ -23,8 +23,7 @@ type Timer interface {
 type Queue struct{}
 
 func (q *Queue) Schedule(t Timer, duration time.Duration) {
-	after := time.After(duration)
-	<-after
+	<-(time.NewTicker(duration)).C
 	sig := make(chan struct{})
 	defer func() { close(sig) }()
 	go t.OnTimer(sig)
