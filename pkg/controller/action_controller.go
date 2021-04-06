@@ -135,7 +135,6 @@ func (a *ActionController) realAction(obj *resource.Step) error {
 				Post(_action.Spec.Endpoints).
 				Do()
 
-			retryCount := time.Duration(obj.Spec.RetryCount)
 			if err != nil {
 				fmt.Printf(
 					"[ERROR] flowrun (%s) step (%s) execute action (%s) error: %s\n",
@@ -146,7 +145,7 @@ func (a *ActionController) realAction(obj *resource.Step) error {
 				)
 				a.tq.Schedule(
 					&DelayStepAction{obj, a.IStorage},
-					retryCount*time.Second,
+					time.Duration(obj.Spec.RetryCount*1000),
 				)
 			}
 		}()
@@ -157,8 +156,6 @@ func (a *ActionController) realAction(obj *resource.Step) error {
 				Params(obj.Spec.ActionParams).
 				Post(_action.Spec.Endpoints).
 				Do()
-
-			retryCount := time.Duration(obj.Spec.RetryCount)
 			if err != nil {
 				fmt.Printf(
 					"[ERROR] flowrun (%s) step (%s) execute action (%s) error: %s\n",
@@ -169,7 +166,7 @@ func (a *ActionController) realAction(obj *resource.Step) error {
 				)
 				a.tq.Schedule(
 					&DelayStepAction{obj, a.IStorage},
-					retryCount*time.Second,
+					time.Duration(obj.Spec.RetryCount*1000),
 				)
 			}
 		}()

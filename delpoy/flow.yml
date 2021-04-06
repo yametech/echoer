@@ -1,0 +1,24 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: echoer-flow
+  namespace: kube-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: echoer-flow
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: echoer-flow
+    spec:
+      containers:
+        - name: echoer-flow
+          image: 'yametech/echoer-flow:v1.0.0'
+          args:
+            - '-storage_uri=mongodb://mongodb-rs-0-ms.yce-cloud-extensions.svc:27017/admin'
+          env:
+            - name: GIN_MODE
+              value: release

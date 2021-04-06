@@ -1,0 +1,44 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: echoer-api
+  namespace: kube-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: echoer-api
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: echoer-api
+    spec:
+      containers:
+        - name: echoer-api
+          image: 'yametech/echoer-api:v1.0.0'
+          args:
+            - '-storage_uri=mongodb://mongodb-rs-0-ms.yce-cloud-extensions.svc:27017/admin'
+          env:
+            - name: GIN_MODE
+              value: release
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: echoer-api
+  namespace: kube-system
+spec:
+  ports:
+    - name: '8080'
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    - name: '8081'
+      port: 8081
+      protocol: TCP
+      targetPort: 8081
+  selector:
+    app: echoer-api
+  sessionAffinity: None
+  type: ClusterIP

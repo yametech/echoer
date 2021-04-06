@@ -1,0 +1,27 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: echoer-action
+  namespace: kube-system
+  labels:
+    app: echoer-action
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: echoer-action
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: echoer-action
+    spec:
+      containers:
+        - name: echoer-action
+          image: 'yametech/echoer-action:v1.0.6'
+          args:
+            - >-
+              -storage_uri=mongodb://mongodb-rs-0-ms.yce-cloud-extensions.svc:27017/admin
+          env:
+            - name: GIN_MODE
+              value: release
