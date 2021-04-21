@@ -11,6 +11,7 @@ require (
 	github.com/olekukonko/tablewriter v0.0.4
 	github.com/pkg/errors v0.9.1
 	github.com/serialx/hashring v0.0.0-20200727003509-22c0c7ab6b1b
+	github.com/tidwall/gjson v1.7.4
 	github.com/yuin/goldmark v1.3.3 // indirect
 	go.mongodb.org/mongo-driver v1.4.1
 	golang.org/x/mod v0.4.2 // indirect
