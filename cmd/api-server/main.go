@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/yametech/echoer/pkg/api"
+	"github.com/yametech/echoer/pkg/controller"
 	"github.com/yametech/echoer/pkg/storage/mongo"
 	"time"
 )
@@ -35,6 +36,7 @@ func main() {
 		}
 	}()
 
+	go controller.GC(stage)
 	for {
 		select {
 		case e := <-errC:
