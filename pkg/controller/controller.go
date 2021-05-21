@@ -70,6 +70,20 @@ func (dsa *DelayStepAction) OnTimer(t <-chan struct{}) {
 		}
 
 		flowRun.Spec.CurrentState = fsm.STOPPED
+		needModify := false
+		for ids, step := range flowRun.Spec.Steps {
+			if step.UUID == dsa.step.UUID {
+				needModify = true
+				flowRun.Spec.Steps[ids].Spec.Done = true
+				flowRun.Spec.Steps[ids].Spec.Response.State = "TIMEOUT"
+				continue
+			}
+			if needModify {
+				flowRun.Spec.Steps[ids].Spec.Done = true
+				flowRun.Spec.Steps[ids].Spec.Response.State = "TIMEOUT"
+			}
+		}
+
 		_, isUpdate, err = dsa.Apply(common.DefaultNamespace, common.FlowRunCollection, flowRun.GetName(), flowRun)
 		if err != nil || !isUpdate {
 			fmt.Printf("[ERROR] force update stop flowrun (%s) error (%s)\n", flowRun.GetName(), err)
